@@ -49,15 +49,7 @@
 	</distributionManagement>
 	
 	<modules>
-		<module>docx4j-template-beetl</module>
 		<module>docx4j-template-freemarker</module>
-		<module>docx4j-template-httl</module>
-		<module>docx4j-template-jetbrick</module>
-		<module>docx4j-template-jsp</module>
-		<module>docx4j-template-rythm</module>
-		<module>docx4j-template-thymeleaf</module>
-		<module>docx4j-template-velocity</module>
-		<module>docx4j-template-webit</module>
 		<module>docx4j-template-xhtml</module>
 	</modules>
 

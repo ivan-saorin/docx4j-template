@@ -32,7 +32,7 @@
                 <#if (format)>
                 <td>${model.date?string("yyyy-MM-dd HH:mm:ss")}</td>
                 <#else>
-                <td>${String.valueOf(model.date)}</td>
+                <td>${model.date?datetime}</td>
                 </#if>
                 <td>${model.bool?string("true", "false")}</td>
                 <#if (model.value > 105.5)>
