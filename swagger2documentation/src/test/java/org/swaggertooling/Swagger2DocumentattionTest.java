@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, vindell (https://github.com/vindell).
+ * Copyright (c) 2018, Ivan Saorin (https://github.com/ivan.saorin).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,66 +16,38 @@
 package org.swaggertooling;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
+import org.apitooling.utils.walker.ApiWalker;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Swagger2DocumentattionTest extends TestDataSource {
+public class Swagger2DocumentattionTest {
 
 	private static Logger logger = LoggerFactory.getLogger(Swagger2DocumentattionTest.class);
 	
-	//protected WordprocessingMLFreemarkerTemplate freemarkerTemplate = null;
-	
+	private File BASE = new File(".\\target\\test-classes\\");
 	@Before
 	public void Before() {
 		
-        variables();
-		
-        /*
-        freemarkerTemplate = new WordprocessingMLFreemarkerTemplate(false );
-        
-        try {
-        	File dirFile = new File(Swagger2docxTest.class.getResource("/tpl/").getPath());
-			freemarkerTemplate.setPreTemplateLoaders(new FileTemplateLoader(dirFile));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-        
-        */
 	}
 	
 	@Test
 	public void test() throws Exception {
-		
-		File[] yamls = load();
-		
-		for (File yaml : yamls) {
-			test(yaml);
+		if (!BASE.exists()) {
+			throw new FileNotFoundException("The directory do not exist: " + BASE.getAbsolutePath());
 		}
+		logger.warn("Base set to: {}", BASE.getAbsolutePath());
+		new ApiWalker(BASE, "api", "output", "adoc").walk();
 		
 	}
 	
-	private void test(File yaml) throws Exception {
-		if (logger.isWarnEnabled()) logger.warn("loading {}", yaml.getAbsolutePath());
-		/*
-		SwaggerModel model = SwaggerParser.load(yaml);
-		variables.put("model", model);
-		variables.put("title", "title");
-		variables.put("content", "content");
-		
-		WordprocessingMLPackage wordMLPackage = freemarkerTemplate.process("freemarker.tpl", variables);
-		
-		File outputDocx = new File("src/test/resources/output/freemarkerTemplate_output.docx");
-		wordMLPackage.save(outputDocx);
-		*/
-	}
-
 	@After
 	public void after() {
-		//freemarkerTemplate = null;
+
 	}
 	
 }

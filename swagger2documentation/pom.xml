@@ -38,6 +38,8 @@
 		<asciidoctorj.version>v1.6.0-RC.2</asciidoctorj.version>
 		<asciidoctorj.pdf.version>1.5.0-alpha.16</asciidoctorj.pdf.version>
 		<json-schema-validator.version>2.2.6</json-schema-validator.version>
+		<swagger-parser.version>2.0.0-rc1</swagger-parser.version>
+		<swagger-parser-v3.version>2.0.7</swagger-parser-v3.version>
 
 
 		<maven.version>3.0</maven.version>
@@ -85,12 +87,6 @@
 			<version>${slf4j.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.reprezen.kaizen</groupId>
-			<artifactId>openapi-parser</artifactId>
-			<version>${openapi-parser.version}</version>
-		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/io.github.gitbucket/markedj -->
 		<dependency>
 			<groupId>io.github.gitbucket</groupId>
@@ -102,6 +98,20 @@
 			<groupId>io.github.swagger2markup</groupId>
 			<artifactId>markup-document-builder</artifactId>
 			<version>${markup-document-builder.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/io.swagger/swagger-parser -->
+		<dependency>
+		    <groupId>io.swagger</groupId>
+		    <artifactId>swagger-parser</artifactId>
+		    <version>${swagger-parser.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/io.swagger.parser.v3/swagger-parser -->
+		<dependency>
+		    <groupId>io.swagger.parser.v3</groupId>
+		    <artifactId>swagger-parser</artifactId>
+		    <version>${swagger-parser-v3.version}</version>
 		</dependency>
 
 		<dependency>
