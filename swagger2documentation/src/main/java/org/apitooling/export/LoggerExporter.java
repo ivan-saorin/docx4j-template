@@ -54,7 +54,7 @@ public class LoggerExporter implements Exporter {
 		StringBuilder sb = outputApi(model);
 		if (logger.isInfoEnabled()) logger.info(System.lineSeparator() + sb.toString());
 		
-		return new ExporterOuptput();
+		return new ExporterOuptput(sb.toString());
 	}
 
 	private StringBuilder outputApi(ApiModel model2) {

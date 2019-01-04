@@ -20,7 +20,7 @@ public class DeleteWalker extends DirectoryWalker {
 	@Override
 	public void process(File file) throws WebApiException {
 		
-		if (file.getName().endsWith(".adoc")) {
+		if (file.getName().endsWith(".md")) {
 			logger.info("deleting adoc: " + file.getName() + " [" + file.getAbsolutePath() + "]");
 			
             try {

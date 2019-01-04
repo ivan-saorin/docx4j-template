@@ -137,8 +137,12 @@ public class ApiParameter extends ApiElement {
 		if (param.getSchema() != null) {
 			this.dataType = new ApiField(modelVersion, model, this.name, param.getSchema());
 		}
-		this.description = param.getDescription();
-		this.required = param.getRequired();
+		if (param.getDescription() != null) {
+			this.description = param.getDescription();
+		}
+		if (param.getRequired() != null) {
+			this.required = param.getRequired();
+		}
 
 		this.readOnly = false;
 

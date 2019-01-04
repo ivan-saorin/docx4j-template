@@ -1,7 +1,9 @@
 package org.apitooling.export;
 
+import java.io.IOException;
+
 public interface Exporter {
 
-	ExporterOuptput getOuptput();
+	ExporterOuptput getOuptput() throws IOException;
 
 }

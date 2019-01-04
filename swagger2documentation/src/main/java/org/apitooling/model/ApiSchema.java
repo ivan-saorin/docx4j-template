@@ -25,15 +25,15 @@ public class ApiSchema extends LinkedHashMap<String, ApiField> {
 			ComposedSchema cs = (ComposedSchema) schema;
 			if (cs.getAllOf() != null) {
 				this.typeName = key + " (allOf)";
-				describeComposedSchema(modelVersion, model, cs.getAllOf(), "<+>");
+				describeComposedSchema(modelVersion, model, cs.getAllOf(), "+");
 			}
 			else if (cs.getAnyOf() != null) {
 				this.typeName = key + " (anyOf)";
-				describeComposedSchema(modelVersion, model, cs.getAnyOf(), "<or>");
+				describeComposedSchema(modelVersion, model, cs.getAnyOf(), "or");
 			}
 			else if (cs.getOneOf() != null) {
 				this.typeName = key + " (oneOf)";
-				describeComposedSchema(modelVersion, model, cs.getOneOf(), "<and>");
+				describeComposedSchema(modelVersion, model, cs.getOneOf(), "and");
 			}
 		}
 		
@@ -88,7 +88,7 @@ public class ApiSchema extends LinkedHashMap<String, ApiField> {
 			ComposedModel cm = (ComposedModel) schema;
 			if (cm.getAllOf() != null) {
 				this.typeName = key + " (allOf)";
-				describeComposedSchema(modelVersion, model, key, cm.getAllOf(), "<+>");
+				describeComposedSchema(modelVersion, model, key, cm.getAllOf(), "+");
 			}
 		}
 		if (schema.getProperties() != null) {

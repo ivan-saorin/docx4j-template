@@ -32,7 +32,7 @@ public class CopyWalker extends DirectoryWalker {
 		if (!dst.exists()) {
 			throw new WebApiRuntimeException("destination dir not found: " + dst.getAbsolutePath());
 		}
-		if (file.getName().endsWith(".adoc")) {
+		if (file.getName().endsWith(".md")) {
 			logger.info("processing adoc: " + file.getName() + " [" + file.getAbsolutePath() + "]");
 			
 			copyFile(file.toPath(), new File(dst, file.getName()).toPath(), true);

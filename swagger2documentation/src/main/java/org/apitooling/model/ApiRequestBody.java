@@ -16,7 +16,7 @@ public class ApiRequestBody extends ApiElement {
 	
 	public String name;
 	public String description;
-	public boolean required;
+	public boolean required = false;
 	public ApiContent content;
 	
 	public ApiRequestBody(ApiType modelVersion, OpenAPI model, String name, RequestBody requestBody) {
@@ -29,8 +29,12 @@ public class ApiRequestBody extends ApiElement {
 		if (requestBody.getDescription() != null) {
 			this.description = requestBody.getDescription();
 		}
-		this.required = requestBody.getRequired();
-		this.content = new ApiContent(modelVersion, model, name, requestBody.getContent());		
+		if (requestBody.getRequired() != null) {
+			this.required = requestBody.getRequired();
+		}
+		if (requestBody.getContent() != null) {
+			this.content = new ApiContent(modelVersion, model, name, requestBody.getContent());
+		}
 	}
 	
 	public ApiRequestBody(ApiType modelVersion, Swagger model, String string, List<String> consumes, BodyParameter param) {
