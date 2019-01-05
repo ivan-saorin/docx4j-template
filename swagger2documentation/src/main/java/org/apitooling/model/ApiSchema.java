@@ -1,21 +1,29 @@
 package org.apitooling.model;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.media.ComposedSchema;
 import io.swagger.v3.oas.models.media.Schema;
+import v2.io.swagger.models.ArrayModel;
 import v2.io.swagger.models.ComposedModel;
 import v2.io.swagger.models.Model;
+import v2.io.swagger.models.ModelImpl;
 import v2.io.swagger.models.RefModel;
 import v2.io.swagger.models.Swagger;
+import v2.io.swagger.models.properties.ObjectProperty;
 import v2.io.swagger.models.properties.Property;
 
 public class ApiSchema extends LinkedHashMap<String, ApiField> {
 	
 	private static final long serialVersionUID = 6146468998693758762L;
+	private static Logger logger = LoggerFactory.getLogger(ApiSchema.class);
 	
 	private String typeName;
 	
@@ -77,8 +85,18 @@ public class ApiSchema extends LinkedHashMap<String, ApiField> {
 		this.typeName = key;
 		put(modelVersion, model, key, schema);
 	}
+
+	public ApiSchema(int index, ApiType modelVersion, Swagger model, String key, Property schema) {
+		super();
+		describeModel(index, modelVersion, model, key, schema);
+	}
+
 	
-	
+	private void describeModel(int index, ApiType modelVersion, Swagger model, String key, Property schema) {
+		this.typeName = key;
+		put(modelVersion, model, key, schema);
+	}
+
 	private void put(ApiType modelVersion, Swagger model, String key, Model schema) {
 		this.typeName = key;
 		if (schema instanceof RefModel) {
@@ -91,6 +109,15 @@ public class ApiSchema extends LinkedHashMap<String, ApiField> {
 				describeComposedSchema(modelVersion, model, key, cm.getAllOf(), "+");
 			}
 		}
+		else if (schema instanceof ArrayModel) {
+			this.put(key, new ApiField(modelVersion, model, key, (ArrayModel) schema));
+		}
+		else if (schema instanceof ModelImpl) {
+			if (schema.getProperties() == null) {
+				this.put(key, new ApiField(modelVersion, model, key, (ModelImpl) schema));
+			}
+		}
+		
 		if (schema.getProperties() != null) {
 			Set<String> keys = schema.getProperties().keySet();
 			for (String skey : keys) {
@@ -110,7 +137,7 @@ public class ApiSchema extends LinkedHashMap<String, ApiField> {
 			else if ((m.getProperties() != null) && (m.getProperties().size() > 0)) {
 				Set<String> keys = m.getProperties().keySet();
 				for (String pkey : keys) {					
-					this.put(pkey, new ApiField(modelVersion, model, m.getProperties().get(pkey)));
+					this.put(pkey, new ApiField(modelVersion, model, pkey, m.getProperties().get(pkey)));
 				}
 				this.put(title, new ApiField());
 			}
@@ -118,7 +145,29 @@ public class ApiSchema extends LinkedHashMap<String, ApiField> {
 	}
 
 	private void put(ApiType modelVersion, Swagger model, String key, Property schema) {
-		this.put(key, new ApiField(modelVersion, model, schema));
+		if (schema.getType().equalsIgnoreCase("object")) {
+			if (schema.getName() != null) {
+				this.put(key, new ApiField(modelVersion, model, key, schema));
+			}
+			else if (schema instanceof ObjectProperty) {
+				ObjectProperty obj = (ObjectProperty) schema;				
+				Set<String> keys = obj.getProperties().keySet();
+				for (String pkey : keys) {
+					ArrayList<String> requireds = new ArrayList<String>();
+					if (obj.getRequiredProperties() != null) {
+						requireds.addAll(obj.getRequiredProperties());
+					}
+					if (logger.isInfoEnabled()) logger.info("{}> requireds: {}, contains: {}", pkey, requireds, requireds.contains(pkey));
+					this.put(pkey, new ApiField(modelVersion, model, pkey, obj.getProperties().get(pkey), requireds.contains(pkey)));
+				}
+			}
+			else {
+				throw new IllegalStateException();
+			}
+		}
+		else {
+			this.put(key, new ApiField(modelVersion, model, key, schema));
+		}		
 	}
 
 	public String getTypeName() {

@@ -1,5 +1,5 @@
 <#if response.description??>
-	<para>${response.description}</para>
+	<para>${md2docbook(response.description)}</para>
 </#if>
 <#if response.produces??>
 	<#list response.produces>
@@ -25,25 +25,12 @@
 	<para>(has links)</para>
 	<#items as link></#items>
 </#list>
-<#if response.examples??>
-	<#list response.examples>
-		<#items as key, example>
-	<example><title>${key}</title></example>
-			<#if example.summary??>
-	<para>${example.summary}</para>
-			</#if>
-			<#if example.description??>
-	<para>${example.description}</para>
-			</#if>
-			<#if example.value??>
-	<programlisting>${example.value}</programlisting>
-			</#if>
-		</#items>
-	</#list>	
-</#if>
+<#assign item=response>
+<#include "./all_examples.ftl">			
 <#if response.schema??>
-	<example><title>Schema</title></example>
-	<programlisting>${response.schema}</programlisting>
+	<#assign schemaTitle="Schema">
+	<#assign schema=response.schema>
+	<#include "./schemaTable.ftl">
 </#if>
 <#if response.content??>
 	<#assign content=response.content>

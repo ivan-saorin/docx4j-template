@@ -3,7 +3,6 @@ package org.apitooling.export;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -52,10 +51,13 @@ public class ExporterOuptput {
 	public void toFile(File output) throws IOException {
 		if (input != null) {			
 			new DocumentConverter()
-		     .fromFile(input, InputFormat.DOCBOOK)
+		     .fromFile(input, InputFormat.DOCBOOK.toString() + "+hard_line_breaks+autolink_bare_uris" )
 		     .toFile(output, OutputFormat.DOCX)
-		     //.addOption("-s")                     //optional
-		     //.workingDirectory(new File("/tmp"))  //optional
+		     .addOption("--toc")
+		     .addOption("--toc-depth=3")
+		     //.addOption("--wrap=auto|none|preserve")
+		     .addOption("--wrap=preserve")
+		     //.addOption("--standalone") //.addOption("-s") // The default for DOCX
 		     .convert();			
 		} else if (template != null) {
 	        // For the sake of example, also write output into a file:

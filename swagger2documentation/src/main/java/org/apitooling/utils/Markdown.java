@@ -1,5 +1,13 @@
 package org.apitooling.utils;
 
+import java.util.HashMap;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.github.gitbucket.markedj.Marked;
+import io.github.gitbucket.markedj.Options;
 import net.steppschuh.markdowngenerator.MarkdownBuilder;
 import net.steppschuh.markdowngenerator.link.Link;
 import net.steppschuh.markdowngenerator.table.Table;
@@ -7,6 +15,33 @@ import net.steppschuh.markdowngenerator.text.emphasis.ItalicText;
 
 public class Markdown {
 
+	private static Logger logger = LoggerFactory.getLogger(Markdown.class);
+
+    private final static HashMap<String, String> conversionTable = new HashMap<String, String>();
+	private static final Options options; 
+	static {
+		//conversionTable.put("\\n", "");
+		conversionTable.put("<p>", "<para>");
+		conversionTable.put("</p>", "</para>");
+		conversionTable.put("<para><para>", "<para>");
+		conversionTable.put("</para></para>", "</para>");
+		conversionTable.put("<para></para>", "");
+		conversionTable.put("<br>", "</para><para>");
+		conversionTable.put("<strong>", "<emphasis role=\"strong\">");
+		conversionTable.put("</strong>", "</emphasis>");
+		conversionTable.put("<em>", "<emphasis>");
+		conversionTable.put("</em>", "</emphasis>");
+		
+		
+		options = new Options();
+		options.setSanitize(true);
+		options.setGfm(true);
+		options.setBreaks(true);
+		options.setTables(true);
+		//whitelist	See Options.java	Whitelist of HTML tags.
+		//options.setWhitelist(whitelist);
+	}
+	
 	private Markdown() {
 	}
 	
@@ -37,5 +72,38 @@ public class Markdown {
 		builder.newLine();
 		builder.append(tableBuilder.build());
 	}
+
+	public static Object md2docbook(Object object) {
+		String markdown = object.toString();
+		//if (logger.isInfoEnabled()) logger.info("md2docbook in: {}", markdown);
+
+		String html = Marked.marked(markdown, options);
+		Set<String> keys = conversionTable.keySet();
+		for (String key : keys) {
+			String replacement = conversionTable.get(key);
+			html = html.replaceAll(key, replacement);
+		}
+		
+		//String html = Marked.marked(markdown, options);		
+		//if (logger.isInfoEnabled()) logger.info("md2docbook out: {}", html);
+		
+		return html;
+	}
+	
+	public static String compactWhiteSpace(String string) {
+        String nbsp = "&nbsp;";
+        
+        if(string.length()==0) return "";
+        string = string.replaceAll("\\s+", " ").trim();
+       
+        while(string.indexOf(nbsp) == 0) 
+            string = string.substring(nbsp.length());
+        while(string.lastIndexOf(nbsp) != -1 && string.lastIndexOf(nbsp) == string.length()-nbsp.length()) 
+            string = string.substring(0, string.length()-nbsp.length());
+        
+        string = string.replaceAll("\\s+", " ").trim();
+        if(string.length()!=0) return string;
+        else return " "; // keep one whitespace
+    }
 	
 }

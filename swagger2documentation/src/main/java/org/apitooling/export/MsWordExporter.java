@@ -27,7 +27,7 @@ public class MsWordExporter extends DocBookExporter implements Exporter {
 	@Override
 	public ExporterOuptput getOuptput() throws IOException {
 		ExporterOuptput asciidoc = super.getOuptput();
-		String name = this.changeExtension(input.getName(), ".md");
+		String name = this.changeExtension(input.getName(), ".xml");
 		if (logger.isWarnEnabled()) logger.warn("name: {}", name);
 		File temp = new File(temporaryDir, name);
 		asciidoc.toFile(temp);

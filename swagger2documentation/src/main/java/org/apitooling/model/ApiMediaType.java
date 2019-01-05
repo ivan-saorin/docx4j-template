@@ -40,7 +40,7 @@ public class ApiMediaType extends ApiElement {
 		if (mediaType.getExamples() != null) {
 			Set<String> keys = mediaType.getExamples().keySet();
 			for (String key : keys) {
-				this.examples.put(key, new ApiExample(modelVersion, model, mediaType.getExamples().get(key)));
+				this.examples.put(key, new ApiExample(modelVersion, model, key, mediaType.getExamples().get(key)));
 			}
 		}
 		this.schema = new ApiField(modelVersion, model, "", mediaType.getSchema());

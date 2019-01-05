@@ -27,14 +27,20 @@ public class ApiUtils {
 
 	private static String calculateBasePath(ApiPath path) {
 		String[] tokens = path.getPath().split("/");
+		if (tokens.length == 0) {
+			return "Base";
+		}
+		
 		int i = 0;
-		if (tokens[0].equals(""))
+		if (tokens[0].equals("")) {
 			i++;
-		if (tokens.length > 0) {
-			return tokens[i];
+		}
+		
+		if (tokens[i].startsWith("{")) {
+			return "Base";
 		}
 		else {
-			return "";
+			return tokens[i];
 		}
 	}
 

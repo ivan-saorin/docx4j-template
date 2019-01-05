@@ -41,7 +41,6 @@ import net.steppschuh.markdowngenerator.text.Text;
 import net.steppschuh.markdowngenerator.text.TextBuilder;
 import net.steppschuh.markdowngenerator.text.emphasis.BoldText;
 import net.steppschuh.markdowngenerator.text.emphasis.ItalicText;
-import net.steppschuh.markdowngenerator.text.emphasis.StrikeThroughText;
 
 public class MarkdownExporter implements Exporter {
 
@@ -596,6 +595,21 @@ public class MarkdownExporter implements Exporter {
 		outputContent(res.getContent(), lvl);
 	}
 
+	private void outputSchema(ApiSchema schema, int lvl) {
+		//sb.append(TAB).append(TAB).append("Schema:").append(TAB).append(TAB).append(schema.getTypeName()).append(LF);
+		this.builder.heading(schema.getTypeName(), lvl++);
+		if (schema.size() > 0) {
+			Set<String> keys = schema.keySet();
+			for (String key : keys) {
+				//sb.append(TAB).append(TAB).append(TAB).append(key).append(LF);
+				this.builder.heading(key, lvl++);
+				ApiField field = schema.get(key);
+				outputSchema(field, lvl);
+			}
+		}
+		
+	}
+
 	private void outputContent(ApiContent content, int lvl) {
 		if (content == null) {
 			return;
@@ -708,11 +722,11 @@ public class MarkdownExporter implements Exporter {
 				.append(p.getDefaultValue());
 		}
 
-		if (p.getEnumValue() != null) {
+		if (p.getEnumValues() != null) {
 			col3
 				.append("Enum: ")
 				.newLine()
-				.append(p.getEnumValue());
+				.append(p.getEnumValues());
 		}
 
 		/* Overly complex will not support right now.

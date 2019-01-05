@@ -14,7 +14,7 @@
 	 version="5.0" xml:lang="en">
 <bookinfo>
 <title>${model.title}</title>
-<subtitle>v. ${model.version}</subtitle>
+<subtitle>v. ${model.apiVersion}</subtitle>
 
 <authorgroup>
 	<#if model.contact??>
@@ -64,7 +64,7 @@
 <#if model.externalDocs??>
 <section xml:id="externalDocs">
 	<title>External Documentation</title>
-	<para>${model.externalDocs.description} <ulink url="${model.externalDocs.url}"><citetitle>${model.externalDocs.url}</citetitle></ulink></para>
+	<para>${md2docbook(model.externalDocs.description)} <ulink url="${model.externalDocs.url}"><citetitle>${model.externalDocs.url}</citetitle></ulink></para>
 </section>
 </#if>
 
@@ -76,11 +76,11 @@
 	<#items as tag> 
 	<section xml:id="tags">
 		<title>${tag.name}</title>
-		<para>${tag.description}</para> 
+		${md2docbook(tag.description)} 
 		<#if tag.externalDocs??>
 		<section xml:id="tagExternalDocs#${tag.name}">
 			<title>External Documentation</title>
-			<para>${tag.externalDocs.description} <ulink url="${tag.externalDocs.url}"><citetitle>${tag.externalDocs.url}</citetitle></ulink></para>
+			<para>${md2docbook(tag.externalDocs.description)} <ulink url="${tag.externalDocs.url}"><citetitle>${tag.externalDocs.url}</citetitle></ulink></para>
 		</section>
 		</#if>
 	</section>
@@ -112,13 +112,13 @@
 <section xml:id="servers">
 	<title>Servers</title>
 	<#items as server>
-	<para>${server.description!""} <ulink url="${server.url}"><citetitle>${server.url}</citetitle></ulink></para>
+	<para>${md2docbook(server.description!"")} <ulink url="${server.url}"><citetitle>${server.url}</citetitle></ulink></para>
 	<#list server.variables>
 	<section xml:id="securityVar">
 		<title>Server Variables</title>
 		<#items as key, var>
 			<para>${key}</para>
-			<para>${var.description} - ${var.enum} - ${var.default}</para>
+			<para>${md2docbook(var.description)} - ${var.enum} - ${var.default}</para>
 		</#items>
 	</section>
 	</#list>
@@ -130,7 +130,7 @@
 <#if model.description??>
 <section xml:id="introduction">
 	<title>Introduction</title>	
-	<para>${model.description}</para>
+	${md2docbook(model.description)}
 </section>
 </#if>
 
@@ -144,15 +144,15 @@
 	<section xml:id="operation${op.method!""}">
 		<title>${op.method!""} ${path.path} ${op.operationId!""}<#if op.deprecated>(deprecated)</#if></title>
 		<#if op.summary??>
-		<para>${op.summary}</para>
+		${md2docbook(op.summary)}
 		</#if>
 		<#if op.description??>
-		<para>${op.description}</para>
+		${md2docbook(op.description)}
 		</#if>
 		<#if op.externalDocs??>
 		<section xml:id="externalDocs${op.method!""}">
 			<title>External Documentation</title>
-			<para>${op.externalDocs.description} <ulink url="${op.externalDocs.url}"><citetitle>${op.externalDocs.url}</citetitle></ulink></para>
+			<para>${md2docbook(op.externalDocs.description)} <ulink url="${op.externalDocs.url}"><citetitle>${op.externalDocs.url}</citetitle></ulink></para>
 		</section>
 		</#if>
 		<#if op.pathParams??>
@@ -208,7 +208,8 @@
 	<title>Schemas</title>
 	<#items as key, schema>
 		<section xml:id="schemas">
-		<title>${key}</title>		
+		<title>${key}</title>
+		<#assign schemaTitle="Schema">
 		<#include "./schemaTable.ftl">
 		</section>	
 	</#items>
@@ -223,23 +224,10 @@
 	</#items>
 	</section>
 	</#list>
-	<#list model.components.examples>
-	<section xml:id="Examples">
-	<title>Examples</title>
-	<#items as key, example>
-	<example><title>${key}</title></example>
-			<#if example.summary??>
-	<para>${example.summary}</para>
-			</#if>
-			<#if example.description??>
-	<para>${example.description}</para>
-			</#if>
-			<#if example.value??>
-	<programlisting>${example.value}</programlisting>
-			</#if>
-	</#items>
-	</section>
-	</#list>
+	<#if model.components.examples??>
+	<#assign item=model.components.examples>
+	<#include "./examples.ftl">
+	</#if>
 	<#list model.components.requestBodies>
 	<section xml:id="requestBodies">
 	<title>Request Bodies</title>

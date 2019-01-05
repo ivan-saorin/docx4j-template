@@ -472,6 +472,18 @@ public class LoggerExporter implements Exporter {
 		}
 	}
 
+	private void outputSchema(StringBuilder sb, ApiSchema schema) {		
+		sb.append(TAB).append(TAB).append("Schema:").append(TAB).append(TAB).append(schema.getTypeName()).append(LF);
+		if (schema.size() > 0) {
+			Set<String> keys = schema.keySet();
+			for (String key : keys) {
+				sb.append(TAB).append(TAB).append(TAB).append(key).append(LF);
+				ApiField field = schema.get(key);
+				outputSchema(sb, field);
+			}
+		}
+	}
+
 	private void outputSchema(StringBuilder sb, ApiField schema) {
 		sb.append(TAB).append(TAB).append("Schema:").append(TAB).append(TAB).append(schema.toString()).append(LF);		
 	}
@@ -533,8 +545,8 @@ public class LoggerExporter implements Exporter {
 			sb.append(TAB).append(TAB).append("DefaultValue:").append(TAB).append(TAB).append(p.getDefaultValue()).append(LF);
 		}
 
-		if (p.getEnumValue() != null) {
-			sb.append(TAB).append(TAB).append("Enum:").append(TAB).append(TAB).append(p.getEnumValue()).append(LF);
+		if (p.getEnumValues() != null) {
+			sb.append(TAB).append(TAB).append("Enum:").append(TAB).append(TAB).append(p.getEnumValues()).append(LF);
 		}
 
 		if (p.getContent() != null) {

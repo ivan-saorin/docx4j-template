@@ -47,7 +47,10 @@ public class DocBookExporter implements Exporter {
         // Some other recommended settings:
         cfg.setDefaultEncoding("UTF-8");
         cfg.setLocale(Locale.US);
-        cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);        
+        cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        //cfg.setOutputFormat(XMLOutputFormat.INSTANCE);
+        cfg.setSharedVariable("md2docbook", new Md2Docbook());
+        cfg.setSharedVariable("xmlEscaping", new XmlEscaping());
 	}	
 	
 	public DocBookExporter(ApiModel model) {

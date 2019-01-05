@@ -19,7 +19,7 @@ public class ApiResponse extends ApiElement {
 	private LinkedHashMap<String, String> examples = new LinkedHashMap<String, String>(); 
 	private ArrayList<ApiParameter> headerAttributes = new ArrayList<ApiParameter>();
 	private ArrayList<ApiLink> links = new ArrayList<ApiLink>();
-	private ApiField schema;
+	private ApiSchema schema;
 	
 	public ApiResponse(int index, ApiType modelVersion, OpenAPI model, String key, io.swagger.v3.oas.models.responses.ApiResponse res) {
 		super();
@@ -84,13 +84,25 @@ public class ApiResponse extends ApiElement {
 			}
 		}
 
+		if (res.getExamples() != null) {
+			Set<String> keys = res.getExamples().keySet();
+			int idxExample = 0;
+			for (String ekey : keys) {
+				Object example = res.getExamples().get(key);
+				if (example != null) {
+					examples.put(ekey, example.toString());
+				}
+			}
+		}
+
 		this.produces = new ArrayList<String>();
 		if ((produces != null) && (produces.size() > 0)) {
 			this.produces.addAll(produces);
 		}
 		
 		if (res.getSchema() != null) {
-			this.schema = new ApiField(modelVersion, model, res.getSchema());			
+			//this.schema = new ApiField(modelVersion, model, res.getSchema());
+			this.schema = new ApiSchema(0, modelVersion, model, "response", res.getSchema());
 		}
 		
 	}
@@ -128,7 +140,7 @@ public class ApiResponse extends ApiElement {
 		return produces;
 	}
 
-	public ApiField getSchema() {
+	public ApiSchema getSchema() {
 		return schema;
 	}
 	

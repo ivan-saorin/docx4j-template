@@ -13,38 +13,32 @@
 <tbody>
 <#items as item>
 <row>
-  <entry><#if item.required??><emphasis role="strong">${item.name!""}</emphasis><#else>${item.name!""}</#if>
-  <#if item.deprecated??>(deprecated)</#if>
-  <#if item.readOnly??>(readOnly)</#if>
-  <#if item.allowEmptyValues??>(allowEmptyValues)</#if>
-  <#if item.allowReserved??>(allowReserved)</#if>
+  <entry><#if (item.dataType?? && item.dataType.required?? && item.dataType.required) || (item.required?? && item.required)><emphasis role="strong">${item.name!""}</emphasis><#else>${item.name!""}</#if>
+  
+  <#if item.deprecated?? && item.deprecated>(deprecated)</#if>
+  <#if item.readOnly?? && item.readOnly>(readOnly)</#if>
+  <#if item.allowEmptyValues?? && item.allowEmptyValues>(allowEmptyValues)</#if>
+  <#if item.allowReserved?? && item.allowReserved>(allowReserved)</#if>
   </entry>
-  <entry>${item.dataType!""}</entry>
-  <entry>${item.description!""}
-
+  <entry>${xmlEscaping(item.dataType!"")}</entry>
+  <entry>${md2docbook(item.description!"")}	
 	<#if item.defaultValue??>default: ${item.defaultValue}</#if>
-	<#if item.enumValue??>enum: ${item.enumValue}</#if>
-	<#if item.content??>content: ${item.content}</#if>
-	<#if item.example??>
-		<example><title>Example</title></example>
-		<programlisting>${item.example}</programlisting>
-    </#if>
-	<#if item.examples??>
-		<#list item.examples>
-			<#items as key, example>
-		<example><title>${key}</title></example>
-		<#if example.summary??>
-		<para>${example.summary}</para>
+	<#if item.dataType??>		
+		<#if item.dataType.enumValues??>
+			<#list item.dataType.enumValues>
+				<para>Possible Values:</para>
+				<itemizedlist mark='bullet'>
+				<#items as enum>
+					<listitem><para>${enum}</para></listitem>						
+				</#items>			
+				</itemizedlist>
+			</#list>
 		</#if>
-		<#if example.description??>
-		<para>${example.description}</para>
-		</#if>
-		<#if example.value??>
-		<programlisting>${example.value}</programlisting>
-		</#if>
-			</#items>
-		</#list>	
+		<#assign item=item.dataType>
+		<#include "./all_examples.ftl">
 	</#if>
+	<#if item.content??>content: ${item.content}</#if>
+	<#include "./all_examples.ftl">
   </entry>
 </row>
 </#items>

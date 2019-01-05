@@ -59,7 +59,7 @@ public class ApiComponents extends ApiElement {
 		if (components.getExamples() != null) {
 			Set<String> keys = components.getExamples().keySet();
 			for (String key : keys) {
-				this.examples.put(key, new ApiExample(modelVersion, model, components.getExamples().get(key)));
+				this.examples.put(key, new ApiExample(modelVersion, model, key, components.getExamples().get(key)));
 			}			
 		}
 		if (components.getRequestBodies() != null) {

@@ -9,13 +9,18 @@ public class ApiExample extends ApiElement {
     private String description = null;
     private String value = null;
 
-	public ApiExample(ApiType modelVersion, OpenAPI model, Example example) {
+	public ApiExample(ApiType modelVersion, OpenAPI model, String key, Example example) {
 		super();
-		defineModel(modelVersion, model, example);
+		defineModel(modelVersion, model, key, example);
 	}
-
-	private void defineModel(ApiType modelVersion, OpenAPI model, Example example) {
-		this.summary = example.getSummary();
+	
+	private void defineModel(ApiType modelVersion, OpenAPI model, String key, Example example) {
+		if (example.getSummary() != null) {
+			this.summary = example.getSummary();
+		}
+		else {
+			this.summary = key;
+		}
 		this.description = example.getDescription();
 		if (example.getValue() != null) {
 			this.value = example.getValue().toString();

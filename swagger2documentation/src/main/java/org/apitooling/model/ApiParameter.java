@@ -1,6 +1,8 @@
 package org.apitooling.model;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -24,7 +26,7 @@ public class ApiParameter extends ApiElement {
 	private String description;
 	private String pattern;
 	private String defaultValue;
-	private String enumValue;
+	private ArrayList<String> enumValues;
 	private ApiContent content; 
 	private String example;
 	private LinkedHashMap<String, ApiExample> examples = new LinkedHashMap<String, ApiExample>();	
@@ -62,7 +64,7 @@ public class ApiParameter extends ApiElement {
 		if (param.getExamples() != null) {
 			Set<String> keys = param.getExamples().keySet();
 			for (String key : keys) {
-				this.examples.put(key, new ApiExample(modelVersion, model, param.getExamples().get(key)));
+				this.examples.put(key, new ApiExample(modelVersion, model, key, param.getExamples().get(key)));
 			}
 		}
 		
@@ -99,17 +101,17 @@ public class ApiParameter extends ApiElement {
 
 		if (param instanceof v2.io.swagger.models.parameters.PathParameter) {
 			v2.io.swagger.models.parameters.PathParameter p = (v2.io.swagger.models.parameters.PathParameter) param;			
-			this.dataType = new ApiField(modelVersion, model, this.name, p);
+			this.dataType = new ApiField(modelVersion, model, this.name, p, param.getRequired());
 		}
 
 		if (param instanceof v2.io.swagger.models.parameters.HeaderParameter) {
 			v2.io.swagger.models.parameters.HeaderParameter p = (v2.io.swagger.models.parameters.HeaderParameter) param;
-			this.dataType = new ApiField(modelVersion, model, this.name, p);
+			this.dataType = new ApiField(modelVersion, model, this.name, p, param.getRequired());
 		}
 
 		if (param instanceof v2.io.swagger.models.parameters.QueryParameter) {
 			v2.io.swagger.models.parameters.QueryParameter p = (v2.io.swagger.models.parameters.QueryParameter) param;
-			this.dataType = new ApiField(modelVersion, model, this.name, p);
+			this.dataType = new ApiField(modelVersion, model, this.name, p, param.getRequired());
 		}
 
 		if (param.isReadOnly() != null) {
@@ -130,7 +132,9 @@ public class ApiParameter extends ApiElement {
 		describeModel(modelVersion, model, key, type, header);
 	}
 
-	private void describeModel(ApiType modelVersion, OpenAPI model, String hkey, ApiParameterType type, Header param) {
+	private void describeModel(ApiType modelVersion, OpenAPI model, String key, ApiParameterType type, Header param) {
+		this.name = key;		
+
 		if (param.get$ref() != null) {
 			this.ref = param.get$ref();
 		}
@@ -152,8 +156,8 @@ public class ApiParameter extends ApiElement {
 		
 		if (param.getExamples() != null) {
 			Set<String> keys = param.getExamples().keySet();
-			for (String key : keys) {
-				this.examples.put(key, new ApiExample(modelVersion, model, param.getExamples().get(key)));
+			for (String ekey : keys) {
+				this.examples.put(key, new ApiExample(modelVersion, model, ekey, param.getExamples().get(ekey)));
 			}
 		}
 		
@@ -165,7 +169,7 @@ public class ApiParameter extends ApiElement {
 			this.content = new ApiContent(modelVersion, model, this.name, param.getContent());
 		}
 
-		if (logger.isInfoEnabled()) logger.info("    {} {}[{}]: {} - {}", (this.deprecated) ? "deprecated" : "", this.name, this.type, this.dataType, this.description);
+		//if (logger.isInfoEnabled()) logger.info("    {} {}[{}]: {} - {}", (this.deprecated) ? "deprecated" : "", this.name, this.type, this.dataType, this.description);
 	}
 	
 	public ApiParameter(int i, ApiType modelVersion, Swagger model, String key, ApiParameterType type, Property header) {
@@ -178,8 +182,13 @@ public class ApiParameter extends ApiElement {
 		if (header.getName() != null) {
 			this.name = header.getName();
 		}
+		else {
+			this.name = key;
+		}
 		
-		this.dataType = new ApiField(modelVersion, model, header);
+		this.required = header.getRequired();
+		
+		this.dataType = new ApiField(modelVersion, model, key, header, this.required);
 		
 		if (header.getPosition() != null) {
 			this.idx = header.getPosition();
@@ -189,17 +198,12 @@ public class ApiParameter extends ApiElement {
 		}
 		this.required = header.getRequired();
 		
-		//if (header.getAccess() != null) {
-		//}
 		if (header.getAllowEmptyValue() != null) {
 			this.allowEmptyValues = header.getAllowEmptyValue();
 		}
 		if (header.getDescription() != null) {
 			this.description = header.getDescription();
 		}
-		//if (header.getXml() != null) {			
-		//}
-		
 	}
 
 	public int getIndex() {
@@ -234,8 +238,8 @@ public class ApiParameter extends ApiElement {
 		return defaultValue;
 	}
 
-	public String getEnumValue() {
-		return enumValue;
+	public List<String> getEnumValues() {
+		return enumValues;
 	}
 
 	public ApiContent getContent() {

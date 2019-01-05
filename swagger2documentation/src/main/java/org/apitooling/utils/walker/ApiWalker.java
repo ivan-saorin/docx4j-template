@@ -56,7 +56,7 @@ public class ApiWalker extends DirectoryWalker {
 				
 				//Exporter exporter = ExporterFactory.export(Exporters.LOGGER, model);
 				//exporter.getOuptput();
-				String name = changeExtension(file.getName(), ".md");
+				String name = changeExtension(file.getName(), ".xml");
 				
 				Exporter exporter = ExporterFactory.export(Exporters.MSWORD, model, this.temporaryDir, file);
 				name = changeExtension(file.getName(), ".docx");
