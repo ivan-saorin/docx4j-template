@@ -22,6 +22,7 @@ public class ApiPath extends ApiElement {
 	
 	public ApiPath(int idx, ApiType modelVersion, OpenAPI model, String key, PathItem path) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, path.getClass().getName(), path.getExtensions());
 		this.idx = idx;
 		describeModel(modelVersion, model, key, path);
 	}
@@ -29,6 +30,8 @@ public class ApiPath extends ApiElement {
 	public ApiPath(int idx2, ApiType modelVersion, Swagger model, String key, Path path) {
 		this.path = key;
 		//if (logger.isInfoEnabled()) logger.info("Path {}:", this.path);
+		this.describeExtensions(path.getVendorExtensions());
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, path.getClass().getName(), path.getVendorExtensions());
 		int idx = 0;
 		
 		Set<HttpMethod> keys = path.getOperationMap().keySet();
@@ -37,9 +40,10 @@ public class ApiPath extends ApiElement {
 		}		
 	}
 
-	private void describeModel(ApiType modelVersion, OpenAPI model, String key, PathItem path) {
+	private void describeModel(ApiType modelVersion, OpenAPI model, String key, PathItem path) {		
 		this.path = key;
 		//if (logger.isInfoEnabled()) logger.info("Path {}:", this.path);
+		this.describeExtensions(path.getExtensions());
 		int idx = 0;
 		if (path.getHead() != null) {
 			operations.add(new ApiOperation(idx++, modelVersion, model, io.swagger.v3.oas.models.PathItem.HttpMethod.HEAD, path.getHead()));

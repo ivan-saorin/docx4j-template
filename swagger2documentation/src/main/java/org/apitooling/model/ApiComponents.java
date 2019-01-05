@@ -4,6 +4,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.parameters.Parameter;
@@ -12,6 +15,8 @@ import v2.io.swagger.models.Swagger;
 
 public class ApiComponents extends ApiElement {
 
+	private static Logger logger = LoggerFactory.getLogger(ApiComponents.class);
+	
 	private LinkedHashMap<String, ApiSchema> schemas = new LinkedHashMap<String, ApiSchema>();
 	private LinkedHashMap<String, ApiResponse> responses = new LinkedHashMap<String, ApiResponse>();
 	private LinkedHashMap<String, ApiParameter> parameters = new LinkedHashMap<String, ApiParameter>();
@@ -23,10 +28,12 @@ public class ApiComponents extends ApiElement {
 
 	public ApiComponents(ApiType modelVersion, OpenAPI model, Components components) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, components.getClass().getName(), components.getExtensions());
 		describeModel(modelVersion, model, components);
 	}
 
 	private void describeModel(ApiType modelVersion, OpenAPI model, Components components) {
+		this.describeExtensions(components.getExtensions());
 		if (components.getSchemas() != null) {
 			Set<String> keys = components.getSchemas().keySet();
 			int i = 0;

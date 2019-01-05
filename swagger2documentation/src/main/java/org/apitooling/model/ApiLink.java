@@ -4,11 +4,16 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.links.Link;
 
 public class ApiLink extends ApiElement {
 
+	private static Logger logger = LoggerFactory.getLogger(ApiLink.class);
+	
 	private String ref;
 	private String description;
 	private ArrayList<ApiParameter> headerAttributes = new ArrayList<ApiParameter>();
@@ -20,6 +25,7 @@ public class ApiLink extends ApiElement {
 	
 	public ApiLink(int index, ApiType modelVersion, OpenAPI model, String key, Link link) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, link.getClass().getName(), link.getExtensions());
 		describeModel(index, modelVersion, model, key, link);
 	}
 
@@ -30,6 +36,9 @@ public class ApiLink extends ApiElement {
 		if (link.getDescription() != null) {
 			this.description = link.getDescription();
 		}
+		
+		this.describeExtensions(link.getExtensions());
+		
 		if (link.getHeaders() != null) {
 			Set<String> keys = link.getHeaders().keySet();
 			int idxHeader = 0;

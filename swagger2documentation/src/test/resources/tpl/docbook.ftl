@@ -48,7 +48,11 @@
 			<ulink url="${model.license.url}"><citetitle>${model.license.name}</citetitle></ulink>
 		<#else>
 			${model.license}
-		</#if>		
+		</#if>
+	    <#if model.license.xImplementation??>
+	    	<#assign xImpl=model.license.xImplementation>
+	    	<#include "./ximplementation.ftl">
+	    </#if>			
 	</para>
 </section>
 </#if>
@@ -65,6 +69,10 @@
 <section xml:id="externalDocs">
 	<title>External Documentation</title>
 	<para>${md2docbook(model.externalDocs.description)} <ulink url="${model.externalDocs.url}"><citetitle>${model.externalDocs.url}</citetitle></ulink></para>
+    <#if model.externalDocs.xImplementation??>
+    	<#assign xImpl=model.externalDocs.xImplementation>
+    	<#include "./ximplementation.ftl">
+    </#if>		
 </section>
 </#if>
 
@@ -77,10 +85,18 @@
 	<section xml:id="tags">
 		<title>${tag.name}</title>
 		${md2docbook(tag.description)} 
+	    <#if tag.xImplementation??>
+	    	<#assign xImpl=tag.xImplementation>
+	    	<#include "./ximplementation.ftl">
+	    </#if>		
 		<#if tag.externalDocs??>
 		<section xml:id="tagExternalDocs#${tag.name}">
 			<title>External Documentation</title>
 			<para>${md2docbook(tag.externalDocs.description)} <ulink url="${tag.externalDocs.url}"><citetitle>${tag.externalDocs.url}</citetitle></ulink></para>
+		    <#if tag.externalDocs.xImplementation??>
+		    	<#assign xImpl=tag.externalDocs.xImplementation>
+		    	<#include "./ximplementation.ftl">
+		    </#if>			
 		</section>
 		</#if>
 	</section>
@@ -101,6 +117,10 @@
 			<para>${item}</para>
 			</#list>
 		</#list>
+	    <#if sec.xImplementation??>
+	    	<#assign xImpl=sec.xImplementation>
+	    	<#include "./ximplementation.ftl">
+	    </#if>		
 		</section>		
 	</#items>
 </section>
@@ -113,6 +133,10 @@
 	<title>Servers</title>
 	<#items as server>
 	<para>${md2docbook(server.description!"")} <ulink url="${server.url}"><citetitle>${server.url}</citetitle></ulink></para>
+    <#if server.xImplementation??>
+    	<#assign xImpl=server.xImplementation>
+    	<#include "./ximplementation.ftl">
+    </#if>	
 	<#list server.variables>
 	<section xml:id="securityVar">
 		<title>Server Variables</title>
@@ -131,6 +155,10 @@
 <section xml:id="introduction">
 	<title>Introduction</title>	
 	${md2docbook(model.description)}
+    <#if model.xImplementation??>
+    	<#assign xImpl=model.xImplementation>
+    	<#include "./ximplementation.ftl">
+    </#if>	
 </section>
 </#if>
 
@@ -140,6 +168,10 @@
 <section xml:id="api${api}">
 	<title>${api?cap_first!""} API</title>
 	<#list paths as path>
+	    <#if path.xImplementation??>
+	    	<#assign xImpl=path.xImplementation>
+	    	<#include "./ximplementation.ftl">
+	    </#if>
 		<#list path.operations as op>
 	<section xml:id="operation${op.method!""}">
 		<title>${op.method!""} ${path.path} ${op.operationId!""}<#if op.deprecated>(deprecated)</#if></title>
@@ -149,10 +181,18 @@
 		<#if op.description??>
 		${md2docbook(op.description)}
 		</#if>
+	    <#if op.xImplementation??>
+	    	<#assign xImpl=op.xImplementation>
+	    	<#include "./ximplementation.ftl">
+	    </#if>
 		<#if op.externalDocs??>
 		<section xml:id="externalDocs${op.method!""}">
 			<title>External Documentation</title>
 			<para>${md2docbook(op.externalDocs.description)} <ulink url="${op.externalDocs.url}"><citetitle>${op.externalDocs.url}</citetitle></ulink></para>
+		    <#if op.externalDocs.xImplementation??>
+		    	<#assign xImpl=op.externalDocs.xImplementation>
+		    	<#include "./ximplementation.ftl">
+		    </#if>			
 		</section>
 		</#if>
 		<#if op.pathParams??>
@@ -176,6 +216,10 @@
 		<#if op.requestBody?? && op.requestBody.content??>
 		<section xml:id="requestBody${op.method!""}">
 			<title>Request Body <#if op.requestBody.required>(Required)</#if></title>
+		    <#if op.requestBody.xImplementation??>
+		    	<#assign xImpl=op.requestBody.xImplementation>
+		    	<#include "./ximplementation.ftl">
+		    </#if>			
 			<#assign content=op.requestBody.content>
 			<#include "./content.ftl">
 		</section>

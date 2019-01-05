@@ -34,11 +34,13 @@ public class ApiModel extends ApiElement {
 	
 	public ApiModel(OpenAPI openApi) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, openApi.getClass().getName(), openApi.getExtensions());
 		describeModel(openApi);
 	}
 
 	public ApiModel(Swagger swagger) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, swagger.getClass().getName(), swagger.getVendorExtensions());
 		describeModel(swagger);
 	}
 
@@ -54,6 +56,9 @@ public class ApiModel extends ApiElement {
 		if (model.getInfo().getDescription() != null) {
 			this.description = model.getInfo().getDescription();
 		}
+		
+		this.describeExtensions(model.getExtensions());
+		
 		if (model.getInfo().getTermsOfService() != null) {
 			this.termOfService = model.getInfo().getTermsOfService();
 		}
@@ -109,6 +114,9 @@ public class ApiModel extends ApiElement {
 		if (model.getInfo().getDescription() != null) {
 			this.description = model.getInfo().getDescription();
 		}
+		
+		this.describeExtensions(model.getVendorExtensions());
+		
 		if (model.getInfo().getTermsOfService() != null) {
 			this.termOfService = model.getInfo().getTermsOfService();
 		}

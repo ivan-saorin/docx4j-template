@@ -1,44 +1,31 @@
 package org.apitooling.model;
 
-import org.jsoup.safety.Whitelist;
-
-import io.github.gitbucket.markedj.Marked;
-import io.github.gitbucket.markedj.Options;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public abstract class ApiElement {
 
-	private static Options OPTIONS = new Options();
+	private static final String XIMPLEMENTATION_KEY = "x-implementation";	
+	protected LinkedHashMap<String, Object> xImplementation = new LinkedHashMap<String, Object>();  
 	
 	public ApiElement() {
 		super();
-
-		/*  Specify options
-		 *  gfm	true	Enable GitHub Flavored Markdown.
-		 *  tables	true	Enable GFM tables. This option requires the gfm option to be true.
-		 *  breaks	false	Enable GFM line breaks. This option requires the gfm option to be true.
-		 *  sanitize	false	Ignore any HTML that has been input.
-		 *  langPrefix	"lang-"	Prefix of class attribute of code block
-		 *  headerPrefix	""	Prefix of id attribute of header
-		 *  whitelist	See Options.java	Whitelist of HTML tags.
-		 */
-		
-		OPTIONS.setSanitize(true);
-		OPTIONS.setGfm(true);
-		OPTIONS.setTables(true);
-		OPTIONS.setBreaks(true);
-		OPTIONS.setLangPrefix("en");
-		OPTIONS.setHeaderPrefix("md-");
-		OPTIONS.setWhitelist(Whitelist.basic());
-		
-	}	
-	
-	protected String md2html(String md) {
-		if (md == null) {
-			return "";
-		}
-		String marked = Marked.marked(md, OPTIONS);
-		//marked = marked.replaceAll("(\r\n|\n\r|\r|\n)", "<br>");
-		return marked;
 	}
+
+	@SuppressWarnings("unchecked")
+	protected void describeExtensions(Map<String, Object> extensions) {
+		if (extensions == null) {
+			return;
+		}
+		
+		if (extensions.containsKey(XIMPLEMENTATION_KEY)) {
+			Map<String, Object> extension = (Map<String, Object>) extensions.get(XIMPLEMENTATION_KEY);
+			xImplementation.putAll(extension);
+		}		
+	}
+	
+	public Map<String, Object> getxImplementation() {
+		return xImplementation;
+	}	
 	
 }

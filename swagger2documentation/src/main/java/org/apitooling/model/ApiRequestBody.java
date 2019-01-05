@@ -21,6 +21,7 @@ public class ApiRequestBody extends ApiElement {
 	
 	public ApiRequestBody(ApiType modelVersion, OpenAPI model, String name, RequestBody requestBody) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, requestBody.getClass().getName(), requestBody.getExtensions());
 		describeModel(modelVersion, model, name, requestBody);
 	}
 
@@ -29,6 +30,7 @@ public class ApiRequestBody extends ApiElement {
 		if (requestBody.getDescription() != null) {
 			this.description = requestBody.getDescription();
 		}
+		this.describeExtensions(requestBody.getExtensions());
 		if (requestBody.getRequired() != null) {
 			this.required = requestBody.getRequired();
 		}
@@ -39,6 +41,7 @@ public class ApiRequestBody extends ApiElement {
 	
 	public ApiRequestBody(ApiType modelVersion, Swagger model, String string, List<String> consumes, BodyParameter param) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, param.getClass().getName(), param.getVendorExtensions());
 		describeModel(modelVersion, model, name, consumes, param);
 	}
 
@@ -48,6 +51,7 @@ public class ApiRequestBody extends ApiElement {
 		if (param.getDescription() != null) {
 			this.description = param.getDescription();
 		}
+		this.describeExtensions(param.getVendorExtensions());
 		this.required = param.getRequired();		
 		this.content = new ApiContent(modelVersion, model, consumes, name, param.getSchema());
 	}

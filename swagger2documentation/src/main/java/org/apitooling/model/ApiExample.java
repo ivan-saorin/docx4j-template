@@ -1,16 +1,22 @@
 package org.apitooling.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.examples.Example;
 
 public class ApiExample extends ApiElement {
 
+	private static Logger logger = LoggerFactory.getLogger(ApiExample.class);
+	
     private String summary = null;
     private String description = null;
     private String value = null;
 
 	public ApiExample(ApiType modelVersion, OpenAPI model, String key, Example example) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, example.getClass().getName(), example.getExtensions());
 		defineModel(modelVersion, model, key, example);
 	}
 	
@@ -22,6 +28,7 @@ public class ApiExample extends ApiElement {
 			this.summary = key;
 		}
 		this.description = example.getDescription();
+		this.describeExtensions(example.getExtensions());
 		if (example.getValue() != null) {
 			this.value = example.getValue().toString();
 		} else if (example.getExternalValue() != null) {

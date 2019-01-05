@@ -22,11 +22,14 @@ public class ApiMediaType extends ApiElement {
 	
 	public ApiMediaType(ApiType modelVersion, OpenAPI model, MediaType mediaType) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, mediaType.getClass().getName(), mediaType.getExtensions());
 		describeModel(modelVersion, model, mediaType);
 	}
 
 	private void describeModel(ApiType modelVersion, OpenAPI model, MediaType mediaType) {
 		//if (logger.isInfoEnabled()) logger.info("mediaType: {}", mediaType);
+		
+		this.describeExtensions(mediaType.getExtensions());
 		if (mediaType.getEncoding() != null) {
 			Set<String> keys = mediaType.getEncoding().keySet();
 			for (String key : keys) {
@@ -48,11 +51,15 @@ public class ApiMediaType extends ApiElement {
 
 	public ApiMediaType(ApiType modelVersion, Swagger model, String consume, RefModel schema) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, model.getClass().getName(), model.getVendorExtensions());
 		describeModel(modelVersion, model, consume, schema);
 	}
 	
 	private void describeModel(ApiType modelVersion, Swagger model, String consume, RefModel schema) {
 		//if (logger.isInfoEnabled()) logger.info("mediaType: {}", mediaType);
+		
+		this.describeExtensions(schema.getVendorExtensions());
+		
 		this.encoding.put(consume, new ApiEncoding(modelVersion, consume));
 		
 		if (schema.getExample() != null) {

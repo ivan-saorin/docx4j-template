@@ -17,20 +17,24 @@ public class ApiExternalDocs extends ApiElement {
 	
 	public ApiExternalDocs(ApiType modelVersion, OpenAPI model, ExternalDocumentation externalDocs) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, externalDocs.getClass().getName(), externalDocs.getExtensions());
 		describeModel(modelVersion, model, externalDocs);
 	}
 
 	private void describeModel(ApiType modelVersion, OpenAPI model, ExternalDocumentation externalDocs) {
+		this.describeExtensions(externalDocs.getExtensions());
 		this.description = externalDocs.getDescription();
 		this.url = externalDocs.getUrl();
 	}
 
 	public ApiExternalDocs(ApiType modelVersion, Swagger model, ExternalDocs externalDocs) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, externalDocs.getClass().getName(), externalDocs.getVendorExtensions());
 		describeModel(modelVersion, model, externalDocs);
 	}
 
 	private void describeModel(ApiType modelVersion, Swagger model, ExternalDocs externalDocs) {
+		this.describeExtensions(externalDocs.getVendorExtensions());
 		this.description = externalDocs.getDescription();
 		this.url = externalDocs.getUrl();
 	}

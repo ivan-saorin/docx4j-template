@@ -38,12 +38,14 @@ public class ApiParameter extends ApiElement {
 	
 	public ApiParameter(int idx, ApiType modelVersion, OpenAPI model, ApiParameterType type, Parameter param) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, param.getClass().getName(), param.getExtensions());
 		this.idx = idx;
 		this.type = type;
 		describeModel(modelVersion, model, param);
 	}
 
 	private void describeModel(ApiType modelVersion, OpenAPI model, Parameter param) {
+		this.describeExtensions(param.getExtensions());
 		if (param.get$ref() != null) {
 			this.ref = param.get$ref();
 		}
@@ -88,6 +90,7 @@ public class ApiParameter extends ApiElement {
 
 	public ApiParameter(int idx, ApiType modelVersion, Swagger model, ApiParameterType type, v2.io.swagger.models.parameters.Parameter param) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, param.getClass().getName(), param.getVendorExtensions());
 		this.idx = idx;
 		this.type = type;
 		describeModel(modelVersion, model, param);
@@ -97,6 +100,8 @@ public class ApiParameter extends ApiElement {
 		
 		this.name = param.getName();
 		this.description = param.getDescription();
+		this.describeExtensions(param.getVendorExtensions());
+		
 		this.required = param.getRequired();
 
 		if (param instanceof v2.io.swagger.models.parameters.PathParameter) {
@@ -129,6 +134,7 @@ public class ApiParameter extends ApiElement {
 
 	public ApiParameter(int i, ApiType modelVersion, OpenAPI model, String key, ApiParameterType type, Header header) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, header.getClass().getName(), header.getExtensions());
 		describeModel(modelVersion, model, key, type, header);
 	}
 
@@ -144,6 +150,9 @@ public class ApiParameter extends ApiElement {
 		if (param.getDescription() != null) {
 			this.description = param.getDescription();
 		}
+		
+		this.describeExtensions(param.getExtensions());
+		
 		if (param.getRequired() != null) {
 			this.required = param.getRequired();
 		}
@@ -174,6 +183,7 @@ public class ApiParameter extends ApiElement {
 	
 	public ApiParameter(int i, ApiType modelVersion, Swagger model, String key, ApiParameterType type, Property header) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, header.getClass().getName(), header.getVendorExtensions());
 		describeModel(modelVersion, model, key, type, header);
 	}
 	
@@ -185,6 +195,8 @@ public class ApiParameter extends ApiElement {
 		else {
 			this.name = key;
 		}
+		
+		this.describeExtensions(header.getVendorExtensions());
 		
 		this.required = header.getRequired();
 		

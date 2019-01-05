@@ -17,6 +17,10 @@
 		<#if example.value??>
 		<programlisting>${example.value}</programlisting>
 		</#if>
+	    <#if item.xImplementation??>
+	    	<#assign xImpl=example.xImplementation>
+	    	<#include "./ximplementation.ftl">
+	    </#if>			
 	</#if>
 	</example>
 		</#items>

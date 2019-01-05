@@ -19,6 +19,10 @@
   <entry><#if (item.dataType?? && item.dataType.required?? && item.dataType.required) || (item.required?? && item.required)><emphasis role="strong">${key!""}</emphasis><#else>${key!""}</#if></entry>
   <entry>${xmlEscaping(item)}</entry>
   <entry>${md2docbook(item.description!"")}
+  	<#if item.xImplementation??>
+    	<#assign xImpl=item.xImplementation>
+    	<#include "./ximplementation.ftl">
+    </#if>  	
 	<#if item.dataType??>
 		${item.dataType.required?c}	
 		<#if item.dataType.enumValues??>

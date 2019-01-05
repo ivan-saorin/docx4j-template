@@ -61,6 +61,8 @@ public class ApiField extends ApiElement {
 	
 	public ApiField(ApiType modelVersion, Swagger model, String name, PathParameter param, boolean required) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, param.getClass().getName(), param.getVendorExtensions());
+		this.describeExtensions(param.getVendorExtensions());
 		describeModel(model, name, param, required);
 	}
 
@@ -93,6 +95,8 @@ public class ApiField extends ApiElement {
 
 	public ApiField(ApiType modelVersion, Swagger model, String name, HeaderParameter param, boolean required) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, param.getClass().getName(), param.getVendorExtensions());
+		this.describeExtensions(param.getVendorExtensions());
 		describeModel(model, name, param, required);
 	}
 
@@ -125,6 +129,8 @@ public class ApiField extends ApiElement {
 	
 	public ApiField(ApiType modelVersion, Swagger model, String name, QueryParameter param, boolean required) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, param.getClass().getName(), param.getVendorExtensions());
+		this.describeExtensions(param.getVendorExtensions());
 		describeModel(model, name, param, required);
 	}
 
@@ -198,6 +204,7 @@ public class ApiField extends ApiElement {
 
 	public ApiField(ApiType modelVersion, OpenAPI model, String name, Schema<?> schema) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, schema.getClass().getName(), schema.getExtensions());
 		describeSchemaField(modelVersion, model, name, schema);
 	}
 	
@@ -207,6 +214,7 @@ public class ApiField extends ApiElement {
 		if (schema.getRequired() != null) {
 			requireds.addAll(schema.getRequired());
 		}
+		this.describeExtensions(schema.getExtensions());
 		this.required = requireds.contains(name);		
 		this.array = false;
 		if (schema != null) {
@@ -293,11 +301,13 @@ public class ApiField extends ApiElement {
 
 	public ApiField(ApiType modelVersion, Swagger model, String key, Property property) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, property.getClass().getName(), property.getVendorExtensions());
 		describeModel(modelVersion, model, key, property, false);
 	}
 
 	public ApiField(ApiType modelVersion, Swagger model, String key, Property property, boolean required) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, property.getClass().getName(), property.getVendorExtensions());
 		describeModel(modelVersion, model, key, property, required);
 	}
 
@@ -310,6 +320,8 @@ public class ApiField extends ApiElement {
 		else {
 			this.name = key;
 		}
+		
+		this.describeExtensions(p.getVendorExtensions());
 		
 		this.required = required;
 		
@@ -368,6 +380,7 @@ public class ApiField extends ApiElement {
 
 	public ApiField(ApiType modelVersion, Swagger model, String name, RefModel schema) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, schema.getClass().getName(), schema.getVendorExtensions());
 		describeModel(modelVersion, model, name, schema);		
 	}
 
@@ -378,6 +391,10 @@ public class ApiField extends ApiElement {
 	}
 
 	public ApiField(ApiType modelVersion, Swagger model, String key, ArrayModel schema) {
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, schema.getClass().getName(), schema.getVendorExtensions());
+		
+		this.describeExtensions(schema.getVendorExtensions());
+		
 		this.name = key;
 		this.array = true;
 		if (schema != null) {
@@ -411,10 +428,14 @@ public class ApiField extends ApiElement {
 	}
 	
 	public ApiField(ApiType modelVersion, Swagger model, String key, ModelImpl schema) {
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, schema.getClass().getName(), schema.getVendorExtensions());
 		this.name = key;
 		if (schema.getRequired() != null) {
 			this.required = schema.getRequired().contains(name);
-		}		
+		}
+		
+		this.describeExtensions(schema.getVendorExtensions());
+		
 		this.array = false;
 		if (schema != null) {
 			if (schema.getType() != null) {

@@ -3,18 +3,24 @@ package org.apitooling.model;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.servers.Server;
 import v2.io.swagger.models.Swagger;
 
 public class ApiServer extends ApiElement {
 
+	private static Logger logger = LoggerFactory.getLogger(ApiServer.class);
+	
 	private String description;
 	private String url;
 	private LinkedHashMap<String, ApiServerVariable> variables = new LinkedHashMap<String, ApiServerVariable>();
 	
 	public ApiServer(ApiType modelVersion, OpenAPI model, Server server) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, server.getClass().getName(), server.getExtensions());
 		describeModel(modelVersion, model, server);
 	}
 
@@ -22,6 +28,8 @@ public class ApiServer extends ApiElement {
 		if (server.getDescription() != null) {
 			this.description = server.getDescription();
 		}
+		
+		this.describeExtensions(server.getExtensions());
 		
 		if (server.getUrl() != null) {
 			this.url = server.getUrl();

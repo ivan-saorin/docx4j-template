@@ -11,7 +11,11 @@
 	</#list>
 <#else>
 	<para>*/*</para>
-</#if>	
+</#if>
+<#if response.xImplementation??>
+	<#assign xImpl=response.xImplementation>
+	<#include "./ximplementation.ftl">
+</#if>
 <#if response.ref??>
 	<para>Reference Model: ${response.ref}</para>
 </#if>

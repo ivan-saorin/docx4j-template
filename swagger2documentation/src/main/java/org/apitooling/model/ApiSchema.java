@@ -3,6 +3,7 @@ package org.apitooling.model;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -25,9 +26,13 @@ public class ApiSchema extends LinkedHashMap<String, ApiField> {
 	private static final long serialVersionUID = 6146468998693758762L;
 	private static Logger logger = LoggerFactory.getLogger(ApiSchema.class);
 	
+	private static final String XIMPLEMENTATION_KEY = "x-implementation";	
+	protected LinkedHashMap<String, Object> xImplementation = new LinkedHashMap<String, Object>();  
+
 	private String typeName;
 	
 	public ApiSchema(int index, ApiType modelVersion, OpenAPI model, String key, Schema<?> schema) {
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, schema.getClass().getName(), schema.getExtensions());
 		this.typeName = key;
 		if (schema instanceof ComposedSchema) {
 			ComposedSchema cs = (ComposedSchema) schema;
@@ -78,21 +83,25 @@ public class ApiSchema extends LinkedHashMap<String, ApiField> {
 
 	public ApiSchema(int index, ApiType modelVersion, Swagger model, String key, Model schema) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, schema.getClass().getName(), schema.getVendorExtensions());
 		describeModel(index, modelVersion, model, key, schema);
 	}
 
 	private void describeModel(int index, ApiType modelVersion, Swagger model, String key, Model schema) {
 		this.typeName = key;
+		this.describeExtensions(schema.getVendorExtensions());
 		put(modelVersion, model, key, schema);
 	}
 
 	public ApiSchema(int index, ApiType modelVersion, Swagger model, String key, Property schema) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, schema.getClass().getName(), schema.getVendorExtensions());
 		describeModel(index, modelVersion, model, key, schema);
 	}
 
 	
 	private void describeModel(int index, ApiType modelVersion, Swagger model, String key, Property schema) {
+		this.describeExtensions(schema.getVendorExtensions());
 		this.typeName = key;
 		put(modelVersion, model, key, schema);
 	}
@@ -157,7 +166,7 @@ public class ApiSchema extends LinkedHashMap<String, ApiField> {
 					if (obj.getRequiredProperties() != null) {
 						requireds.addAll(obj.getRequiredProperties());
 					}
-					if (logger.isInfoEnabled()) logger.info("{}> requireds: {}, contains: {}", pkey, requireds, requireds.contains(pkey));
+					//if (logger.isInfoEnabled()) logger.info("{}> requireds: {}, contains: {}", pkey, requireds, requireds.contains(pkey));
 					this.put(pkey, new ApiField(modelVersion, model, pkey, obj.getProperties().get(pkey), requireds.contains(pkey)));
 				}
 			}
@@ -169,6 +178,22 @@ public class ApiSchema extends LinkedHashMap<String, ApiField> {
 			this.put(key, new ApiField(modelVersion, model, key, schema));
 		}		
 	}
+
+	@SuppressWarnings("unchecked")
+	protected void describeExtensions(Map<String, Object> extensions) {
+		if (extensions == null) {
+			return;
+		}
+		
+		if (extensions.containsKey(XIMPLEMENTATION_KEY)) {
+			Map<String, Object> extension = (Map<String, Object>) extensions.get(XIMPLEMENTATION_KEY);
+			xImplementation.putAll(extension);
+		}		
+	}
+	
+	public Map<String, Object> getxImplementation() {
+		return xImplementation;
+	}	
 
 	public String getTypeName() {
 		return typeName;

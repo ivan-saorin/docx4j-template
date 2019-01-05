@@ -22,6 +22,10 @@
   </entry>
   <entry>${xmlEscaping(item.dataType!"")}</entry>
   <entry>${md2docbook(item.description!"")}	
+    <#if item.xImplementation??>
+    	<#assign xImpl=item.xImplementation>
+    	<#include "./ximplementation.ftl">
+    </#if>
 	<#if item.defaultValue??>default: ${item.defaultValue}</#if>
 	<#if item.dataType??>		
 		<#if item.dataType.enumValues??>

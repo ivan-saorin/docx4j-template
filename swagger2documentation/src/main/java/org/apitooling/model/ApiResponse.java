@@ -5,12 +5,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.swagger.v3.oas.models.OpenAPI;
 import v2.io.swagger.models.Response;
 import v2.io.swagger.models.Swagger;
 
 public class ApiResponse extends ApiElement {
 
+	private static Logger logger = LoggerFactory.getLogger(ApiResponse.class);
+	
 	private String ref;
 	private String key;
 	private String description;
@@ -23,6 +28,7 @@ public class ApiResponse extends ApiElement {
 	
 	public ApiResponse(int index, ApiType modelVersion, OpenAPI model, String key, io.swagger.v3.oas.models.responses.ApiResponse res) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, res.getClass().getName(), res.getExtensions());
 		describeModel(index, modelVersion, model, key, res);
 	}
 
@@ -38,6 +44,8 @@ public class ApiResponse extends ApiElement {
 		if (res.getDescription() != null) {
 			this.description = res.getDescription();
 		}
+		
+		this.describeExtensions(res.getExtensions());
 		
 		if (res.getHeaders() != null) {
 			Set<String> keys = res.getHeaders().keySet();
@@ -58,6 +66,7 @@ public class ApiResponse extends ApiElement {
 
 	public ApiResponse(int index, ApiType modelVersion, Swagger model, List<String> produces, String key, Response res) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, res.getClass().getName(), res.getVendorExtensions());
 		describeModel(index, modelVersion, model, produces, key, res);
 	}
 
@@ -75,6 +84,8 @@ public class ApiResponse extends ApiElement {
 		if (res.getDescription() != null) {
 			this.description = res.getDescription();
 		}
+		
+		this.describeExtensions(res.getVendorExtensions());
 		
 		if (res.getHeaders() != null) {
 			Set<String> keys = res.getHeaders().keySet();

@@ -35,14 +35,9 @@ public class ApiOperation extends ApiElement {
 	private ArrayList<ApiParameter> headerAttributes = new ArrayList<ApiParameter>();
 	private ArrayList<ApiParameter> queryParams = new ArrayList<ApiParameter>();
 	
-	public ApiOperation(int idx, ApiType modelVersion, Swagger model, HttpMethod method, v2.io.swagger.models.Operation op) {
-		super();
-		this.idx = idx;
-		describeModel(modelVersion, model, method, op);
-	}
-
 	public ApiOperation(int idx, ApiType modelVersion, OpenAPI model, io.swagger.v3.oas.models.PathItem.HttpMethod method, Operation op) {
 		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, op.getClass().getName(), op.getExtensions());
 		this.idx = idx;
 		describeModel(modelVersion, model, method, op);
 	}
@@ -51,6 +46,9 @@ public class ApiOperation extends ApiElement {
 		this.method = method.toString();
 		this.id = op.getOperationId();		
 		this.description = op.getDescription();
+		
+		this.describeExtensions(op.getExtensions());
+		
 		this.summary = op.getSummary();
 		if (op.getDeprecated() != null) {
 			this.deprecated = op.getDeprecated();
@@ -92,10 +90,20 @@ public class ApiOperation extends ApiElement {
 		}
 	}
 
+	public ApiOperation(int idx, ApiType modelVersion, Swagger model, HttpMethod method, v2.io.swagger.models.Operation op) {
+		super();
+		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, op.getClass().getName(), op.getVendorExtensions());
+		this.idx = idx;
+		describeModel(modelVersion, model, method, op);
+	}
+	
 	private void describeModel(ApiType modelVersion, Swagger model, HttpMethod method, v2.io.swagger.models.Operation op) {
 		this.method = method.toString();
 		this.id = op.getOperationId();		
 		this.description = op.getDescription();
+		
+		this.describeExtensions(op.getVendorExtensions());
+		
 		this.summary = op.getSummary();
 		if (op.isDeprecated() != null) {
 			this.deprecated = op.isDeprecated();
