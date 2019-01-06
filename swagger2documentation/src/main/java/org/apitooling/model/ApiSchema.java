@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -21,31 +22,39 @@ import v2.io.swagger.models.Swagger;
 import v2.io.swagger.models.properties.ObjectProperty;
 import v2.io.swagger.models.properties.Property;
 
-public class ApiSchema extends LinkedHashMap<String, ApiField> {
+public class ApiSchema extends ApiElement {
 	
-	private static final long serialVersionUID = 6146468998693758762L;
 	private static Logger logger = LoggerFactory.getLogger(ApiSchema.class);
 	
-	private static final String XIMPLEMENTATION_KEY = "x-implementation";	
-	protected LinkedHashMap<String, Object> xImplementation = new LinkedHashMap<String, Object>();  
-
-	private String typeName;
+	private Random rnd = new Random();
+	private ApiComponents parent;
+	private String name;
+	private String description;
+	private ArrayList<String> requireds = new ArrayList<String>();
+	private LinkedHashMap<String, ApiField> properties = new LinkedHashMap<String, ApiField>();
 	
-	public ApiSchema(int index, ApiType modelVersion, OpenAPI model, String key, Schema<?> schema) {
+	public ApiSchema(int index, ApiType modelVersion, OpenAPI model, ApiComponents parent, String key, Schema<?> schema) {
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, schema.getClass().getName(), schema.getExtensions());
-		this.typeName = key;
+		this.parent = parent;
+		this.name = key;
+		if (schema.getRequired() != null) {
+			requireds.addAll(schema.getRequired());
+		}
+		if (schema.getDescription() != null) {
+			this.description = schema.getDescription();
+		}
 		if (schema instanceof ComposedSchema) {
 			ComposedSchema cs = (ComposedSchema) schema;
 			if (cs.getAllOf() != null) {
-				this.typeName = key + " (allOf)";
+				this.name = key + " (allOf)";
 				describeComposedSchema(modelVersion, model, cs.getAllOf(), "+");
 			}
 			else if (cs.getAnyOf() != null) {
-				this.typeName = key + " (anyOf)";
+				this.name = key + " (anyOf)";
 				describeComposedSchema(modelVersion, model, cs.getAnyOf(), "or");
 			}
 			else if (cs.getOneOf() != null) {
-				this.typeName = key + " (oneOf)";
+				this.name = key + " (oneOf)";
 				describeComposedSchema(modelVersion, model, cs.getOneOf(), "and");
 			}
 		}
@@ -62,7 +71,7 @@ public class ApiSchema extends LinkedHashMap<String, ApiField> {
 	private void describeComposedSchema(ApiType modelVersion, OpenAPI model, List<Schema> list, String title) {
 		for (Schema<?> s : list) {
 			if (s.get$ref() != null) {				
-				this.put("Type", new ApiField(modelVersion, model, s.get$ref(), s));
+				this.properties.put("Type", new ApiField(modelVersion, model, s.get$ref(), s));
 			}
 			else if ((s.getProperties() != null) && (s.getProperties().size() > 0)) {
 				put(modelVersion, model, title, s);
@@ -71,7 +80,7 @@ public class ApiSchema extends LinkedHashMap<String, ApiField> {
 	}
 
 	private void put(ApiType modelVersion, OpenAPI model, String key, Schema<?> s) {
-		this.put(key, new ApiField(modelVersion, model, key, s));
+		this.properties.put(key, new ApiField(modelVersion, model, key, s));
 		if (s.getProperties() != null) {
 			Set<String> keys = s.getProperties().keySet();
 			for (String skey : keys) {
@@ -81,14 +90,18 @@ public class ApiSchema extends LinkedHashMap<String, ApiField> {
 		}
 	}
 
-	public ApiSchema(int index, ApiType modelVersion, Swagger model, String key, Model schema) {
+	public ApiSchema(int index, ApiType modelVersion, Swagger model, ApiComponents parent, String key, Model schema) {
 		super();
+		this.parent = parent;
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, schema.getClass().getName(), schema.getVendorExtensions());
 		describeModel(index, modelVersion, model, key, schema);
 	}
 
 	private void describeModel(int index, ApiType modelVersion, Swagger model, String key, Model schema) {
-		this.typeName = key;
+		this.name = key;
+		if (schema.getDescription() != null) {
+			this.description = schema.getDescription();
+		}
 		this.describeExtensions(schema.getVendorExtensions());
 		put(modelVersion, model, key, schema);
 	}
@@ -99,64 +112,94 @@ public class ApiSchema extends LinkedHashMap<String, ApiField> {
 		describeModel(index, modelVersion, model, key, schema);
 	}
 
-	
 	private void describeModel(int index, ApiType modelVersion, Swagger model, String key, Property schema) {
+		this.name = key;
+		if (schema.getDescription() != null) {
+			this.description = schema.getDescription();
+		}		
 		this.describeExtensions(schema.getVendorExtensions());
-		this.typeName = key;
-		put(modelVersion, model, key, schema);
+		put(modelVersion, model, key, schema, false);
 	}
 
 	private void put(ApiType modelVersion, Swagger model, String key, Model schema) {
-		this.typeName = key;
+		this.name = key;
+		if (schema.getDescription() != null) {
+			this.description = schema.getDescription();
+		}				
+		Map<String, Property> properties = schema.getProperties();
 		if (schema instanceof RefModel) {
-			this.put(key, new ApiField(modelVersion, model, key, (RefModel) schema));
+			this.properties.put(key, new ApiField(modelVersion, model, key, (RefModel) schema));
 		}
 		else if (schema instanceof ComposedModel) {
 			ComposedModel cm = (ComposedModel) schema;
 			if (cm.getAllOf() != null) {
-				this.typeName = key + " (allOf)";
+				this.name = key + " (allOf)";
 				describeComposedSchema(modelVersion, model, key, cm.getAllOf(), "+");
 			}
 		}
 		else if (schema instanceof ArrayModel) {
-			this.put(key, new ApiField(modelVersion, model, key, (ArrayModel) schema));
+			ArrayModel array = (ArrayModel) schema;
+			Property items = array.getItems();
+			if (items.getType().equals("object")) {
+				logger.debug("breakpoint");
+				String nkey = getNewTypeName();
+				while (parent.getSchemas().containsKey(nkey)) {
+					nkey = getNewTypeName();
+				}
+				parent.getSchemas().put(nkey, new ApiSchema(0, modelVersion, model, nkey, items));
+				this.properties.put(key, new ApiField(modelVersion, model, key, array, nkey));
+			}
+			else {
+				this.properties.put(key, new ApiField(modelVersion, model, key, array));
+			}
 		}
 		else if (schema instanceof ModelImpl) {
-			if (schema.getProperties() == null) {
-				this.put(key, new ApiField(modelVersion, model, key, (ModelImpl) schema));
+			ModelImpl s = (ModelImpl) schema;
+			if (s.getRequired() != null) {
+				requireds.addAll(s.getRequired());
+			}		
+
+			if (properties == null) {
+				this.properties.put(key, new ApiField(modelVersion, model, key, (ModelImpl) schema));
 			}
+			//else {			
+			//	if (logger.isInfoEnabled()) logger.info("to be merged {} > {}", key, properties);
+			//}
 		}
 		
-		if (schema.getProperties() != null) {
-			Set<String> keys = schema.getProperties().keySet();
+		if (properties != null) {
+			Set<String> keys = properties.keySet();
 			for (String skey : keys) {
-				Property s1 = schema.getProperties().get(skey);
-				put(modelVersion, model, skey, s1);
+				Property s1 = properties.get(skey);
+				put(modelVersion, model, skey, s1, requireds.contains(skey));
 			}
 		}
 		
+	}
+	private String getNewTypeName() {
+		return "Type" + rnd.nextInt(1000);
 	}
 
 	private void describeComposedSchema(ApiType modelVersion, Swagger model, String key, List<Model> list, String title) {
 		for (Model m : list) {
 			if (m instanceof RefModel) {
-				this.put("Type", new ApiField(modelVersion, model, ((RefModel) m).getSimpleRef(), (RefModel) m));
-				this.put(title, new ApiField());
+				this.properties.put("Type", new ApiField(modelVersion, model, ((RefModel) m).getSimpleRef(), (RefModel) m));
+				this.properties.put(title, new ApiField());
 			}
 			else if ((m.getProperties() != null) && (m.getProperties().size() > 0)) {
 				Set<String> keys = m.getProperties().keySet();
 				for (String pkey : keys) {					
-					this.put(pkey, new ApiField(modelVersion, model, pkey, m.getProperties().get(pkey)));
+					this.properties.put(pkey, new ApiField(modelVersion, model, pkey, m.getProperties().get(pkey)));
 				}
-				this.put(title, new ApiField());
+				this.properties.put(title, new ApiField());
 			}
 		}
 	}
 
-	private void put(ApiType modelVersion, Swagger model, String key, Property schema) {
+	private void put(ApiType modelVersion, Swagger model, String key, Property schema, boolean required) {
 		if (schema.getType().equalsIgnoreCase("object")) {
 			if (schema.getName() != null) {
-				this.put(key, new ApiField(modelVersion, model, key, schema));
+				this.properties.put(key, new ApiField(modelVersion, model, key, schema, required));
 			}
 			else if (schema instanceof ObjectProperty) {
 				ObjectProperty obj = (ObjectProperty) schema;				
@@ -167,7 +210,7 @@ public class ApiSchema extends LinkedHashMap<String, ApiField> {
 						requireds.addAll(obj.getRequiredProperties());
 					}
 					//if (logger.isInfoEnabled()) logger.info("{}> requireds: {}, contains: {}", pkey, requireds, requireds.contains(pkey));
-					this.put(pkey, new ApiField(modelVersion, model, pkey, obj.getProperties().get(pkey), requireds.contains(pkey)));
+					this.properties.put(pkey, new ApiField(modelVersion, model, pkey, obj.getProperties().get(pkey), requireds.contains(pkey)));
 				}
 			}
 			else {
@@ -175,28 +218,18 @@ public class ApiSchema extends LinkedHashMap<String, ApiField> {
 			}
 		}
 		else {
-			this.put(key, new ApiField(modelVersion, model, key, schema));
+			this.properties.put(key, new ApiField(modelVersion, model, key, schema, required));
 		}		
 	}
 
-	@SuppressWarnings("unchecked")
-	protected void describeExtensions(Map<String, Object> extensions) {
-		if (extensions == null) {
-			return;
-		}
-		
-		if (extensions.containsKey(XIMPLEMENTATION_KEY)) {
-			Map<String, Object> extension = (Map<String, Object>) extensions.get(XIMPLEMENTATION_KEY);
-			xImplementation.putAll(extension);
-		}		
+	public String getName() {
+		return name;
+	}
+
+	public LinkedHashMap<String, ApiField> getProperties() {
+		return properties;
 	}
 	
-	public Map<String, Object> getxImplementation() {
-		return xImplementation;
-	}	
-
-	public String getTypeName() {
-		return typeName;
-	}
+	
 	
 }

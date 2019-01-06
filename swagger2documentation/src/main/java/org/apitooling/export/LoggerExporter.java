@@ -117,10 +117,10 @@ public class LoggerExporter implements Exporter {
 			Set<String> keys = schemas.keySet();
 			for (String key : keys) {							
 				ApiSchema s = schemas.get(key);
-				sb.append(TAB).append(s.getTypeName()).append(LF);
-				Set<String> skeys = s.keySet();
+				sb.append(TAB).append(s.getName()).append(LF);
+				Set<String> skeys = s.getProperties().keySet();
 				for (String skey : skeys) {
-					ApiField f = s.get(skey);
+					ApiField f = s.getProperties().get(skey);
 					outputSchema(sb, skey, f);
 				}							
 			}
@@ -473,12 +473,12 @@ public class LoggerExporter implements Exporter {
 	}
 
 	private void outputSchema(StringBuilder sb, ApiSchema schema) {		
-		sb.append(TAB).append(TAB).append("Schema:").append(TAB).append(TAB).append(schema.getTypeName()).append(LF);
-		if (schema.size() > 0) {
-			Set<String> keys = schema.keySet();
+		sb.append(TAB).append(TAB).append("Schema:").append(TAB).append(TAB).append(schema.getName()).append(LF);
+		if (schema.getProperties().size() > 0) {
+			Set<String> keys = schema.getProperties().keySet();
 			for (String key : keys) {
 				sb.append(TAB).append(TAB).append(TAB).append(key).append(LF);
-				ApiField field = schema.get(key);
+				ApiField field = schema.getProperties().get(key);
 				outputSchema(sb, field);
 			}
 		}

@@ -164,10 +164,12 @@ public class ApiModel extends ApiElement {
 			}
 		}
 		
-		int idx = 0;
-		Set<String> keys = model.getPaths().keySet();
-		for (String key : keys) {			
-			paths.add(new ApiPath(idx++, getModelVersion(), model, key, model.getPaths().get(key)));
+		if (model.getPaths() != null) {
+			int idx = 0;
+			Set<String> keys = model.getPaths().keySet();
+			for (String key : keys) {			
+				paths.add(new ApiPath(idx++, getModelVersion(), model, key, model.getPaths().get(key)));
+			}
 		}
 		
 		if (model.getDefinitions() != null) {

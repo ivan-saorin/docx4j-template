@@ -4,9 +4,9 @@
 		<title>Examples</title>
 		<para>	
 		<#items as key, example>
-	<example><title>${key}</title>
+	<para><emphasis>${key}</emphasis>
 	<#if example?is_string>
-		${md2docbook(example)}
+		<programlisting language="javascript">${json(example)}</programlisting>
 	<#else>
 		<#if example.summary??>
 		<para>${md2docbook(example.summary)}</para>
@@ -15,14 +15,14 @@
 		<para>${md2docbook(example.description)}</para>
 		</#if>
 		<#if example.value??>
-		<programlisting>${example.value}</programlisting>
+		<programlisting language="javascript">${json(example.value)}</programlisting>
 		</#if>
 	    <#if item.xImplementation??>
 	    	<#assign xImpl=example.xImplementation>
 	    	<#include "./ximplementation.ftl">
 	    </#if>			
 	</#if>
-	</example>
+	</para>
 		</#items>
 		</para>
 	</section>		

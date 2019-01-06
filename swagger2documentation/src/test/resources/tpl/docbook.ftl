@@ -38,6 +38,8 @@
 
 </bookinfo>
 
+<!--#include "./docbooktest.ftl"-->
+
 <para>Automatically generated from: ${input} (in ${modelVersion} format)</para>
 
 <#if model.license??>
@@ -247,9 +249,18 @@
 <#if model.components??>
 <section xml:id="components">
 	<title>Components</title>
+	<para>Components represent definitions available for reuse by the API implementation. They have no effects if not referenced by the real implementation.</para>
+	<section xml:id="simpleTypes">
+	<title>Simple Types</title>
+	<para>Simple types are reusable fields having simple values such as: string, integer, boolean, arrays of simple objects, etc. In general one could say they do not refer to objects.</para>
+	<#assign types=model.components.simpleTypes>
+	<#assign typesTitle="Types List">
+	<#include "./simpleTypesTable.ftl">
+	</section>	
 	<#list model.components.schemas>
 	<section xml:id="schemas">
 	<title>Schemas</title>
+	<para>Schemas represent reusable objects or arrays of object.</para>
 	<#items as key, schema>
 		<section xml:id="schemas">
 		<title>${key}</title>

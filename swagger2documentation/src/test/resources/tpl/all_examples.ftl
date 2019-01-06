@@ -1,12 +1,13 @@
 <#if item.example??>
-	<example>
-	<title>Example2</title>
-	<programlisting>${item.example}
+	<para>
+	<emphasis>Example</emphasis>
+	<programlisting language="javascript">${json(item.example)}</programlisting>
+	<programlisting>
     <#if item.xImplementation??>
     	<#assign xImpl=item.xImplementation>
     	<#include "./ximplementation.ftl">
     </#if>	
 	</programlisting>
-	</example>
+	</para>
 </#if>
 <#include "./examples.ftl">

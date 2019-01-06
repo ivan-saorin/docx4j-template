@@ -9,14 +9,19 @@ import org.slf4j.LoggerFactory;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.media.ArraySchema;
+import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.Parameter;
+import v2.io.swagger.models.ArrayModel;
 import v2.io.swagger.models.Model;
 import v2.io.swagger.models.Swagger;
+import v2.io.swagger.models.properties.Property;
 
 public class ApiComponents extends ApiElement {
 
 	private static Logger logger = LoggerFactory.getLogger(ApiComponents.class);
 	
+	private LinkedHashMap<String, ApiSchema> simpleTypes = new LinkedHashMap<String, ApiSchema>();
 	private LinkedHashMap<String, ApiSchema> schemas = new LinkedHashMap<String, ApiSchema>();
 	private LinkedHashMap<String, ApiResponse> responses = new LinkedHashMap<String, ApiResponse>();
 	private LinkedHashMap<String, ApiParameter> parameters = new LinkedHashMap<String, ApiParameter>();
@@ -38,7 +43,9 @@ public class ApiComponents extends ApiElement {
 			Set<String> keys = components.getSchemas().keySet();
 			int i = 0;
 			for (String key : keys) {
-				this.schemas.put(key, new ApiSchema(i++, modelVersion, model, key, components.getSchemas().get(key)));
+				Schema s = components.getSchemas().get(key);
+				LinkedHashMap<String, ApiSchema> map = isSimpleType(s) ? this.simpleTypes : this.schemas;
+				map.put(key, new ApiSchema(i++, modelVersion, model, this, key, s));
 			}
 		}
 		if (components.getResponses() != null) {
@@ -91,6 +98,19 @@ public class ApiComponents extends ApiElement {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
+	private boolean isSimpleType(Schema schema) {
+		boolean b = !schema.getType().equals("object");
+		if (b) {
+			if (schema.getType().equals("array") && schema instanceof ArraySchema) {
+				ArraySchema array = (ArraySchema) schema;
+				Schema items = array.getItems();
+				b = !items.getType().equals("object");
+			}
+		}
+		return b;
+	}
+
 	public ApiComponents(ApiType modelVersion, Swagger model, Map<String, Model> definitions) {
 		super();
 		describeModel(modelVersion, model, definitions);
@@ -102,10 +122,27 @@ public class ApiComponents extends ApiElement {
 			int i = 0;
 			for (String key : keys) {
 				Model m = definitions.get(key);
-				this.schemas.put(key, new ApiSchema(i++, modelVersion, model, key, m));
+				LinkedHashMap<String, ApiSchema> map = isSimpleType(m) ? this.simpleTypes : this.schemas;
+				map.put(key, new ApiSchema(i++, modelVersion, model, this, key, m));
 			}
 		}
 		
+	}
+
+	private boolean isSimpleType(Model model) {
+		boolean b = (model.getProperties() == null);
+		if (b) {
+			if (model instanceof ArrayModel) {
+				ArrayModel array = (ArrayModel) model;
+				Property items = array.getItems();
+				b = !items.getType().equals("object");
+			}
+		}
+		return b;
+	}
+
+	public Map<String, ApiSchema> getSimpleTypes() {
+		return simpleTypes;
 	}
 
 	public Map<String, ApiSchema> getSchemas() {
@@ -131,5 +168,5 @@ public class ApiComponents extends ApiElement {
 	public Map<String, ApiLink> getLinks() {
 		return links;
 	}
-	
+
 }

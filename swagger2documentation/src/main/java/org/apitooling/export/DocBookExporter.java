@@ -51,6 +51,7 @@ public class DocBookExporter implements Exporter {
         //cfg.setOutputFormat(XMLOutputFormat.INSTANCE);
         cfg.setSharedVariable("md2docbook", new Md2Docbook());
         cfg.setSharedVariable("xmlEscaping", new XmlEscaping());
+        cfg.setSharedVariable("json", new JsonFormatting());
 	}	
 	
 	public DocBookExporter(ApiModel model) {

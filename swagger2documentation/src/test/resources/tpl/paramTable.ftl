@@ -13,14 +13,15 @@
 <tbody>
 <#items as item>
 <row>
-  <entry><#if (item.dataType?? && item.dataType.required?? && item.dataType.required) || (item.required?? && item.required)><emphasis role="strong">${item.name!""}</emphasis><#else>${item.name!""}</#if>
+  <entry><type><#if (item.dataType?? && item.dataType.required?? && item.dataType.required) || (item.required?? && item.required)><emphasis role="strong">${item.name!""}</emphasis><#else>${item.name!""}</#if>
   
   <#if item.deprecated?? && item.deprecated>(deprecated)</#if>
   <#if item.readOnly?? && item.readOnly>(readOnly)</#if>
   <#if item.allowEmptyValues?? && item.allowEmptyValues>(allowEmptyValues)</#if>
   <#if item.allowReserved?? && item.allowReserved>(allowReserved)</#if>
+  </type>
   </entry>
-  <entry>${xmlEscaping(item.dataType!"")}</entry>
+  <entry><type>${xmlEscaping(item.dataType!"")}</type></entry>
   <entry>${md2docbook(item.description!"")}	
     <#if item.xImplementation??>
     	<#assign xImpl=item.xImplementation>

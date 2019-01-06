@@ -1,5 +1,5 @@
 <#list xImpl>
-	<para><emphasis role="strong"><emphasis>Changes:</emphasis></emphasis>
+	<note><title>Changes:</title>
 	<#items as k, v>
 		<#if k=="original-condition">
 			<#assign ocondition=v>
@@ -20,7 +20,7 @@
 	<para>	
 	<#if ocondition?? && condition??><para>Originally <emphasis>${ocondition}</emphasis> it was changed to <emphasis role="strong">${condition}</emphasis></para> </#if>
 	<#if description??><para>${description}</para></#if>
-	<#if status??><para>Status: <emphasis role="strong">${status}</emphasis> <#if date??>changed on ${date}</#if></para></#if>
+	<#if status??><para>Status: <emphasis role="strong">${status}</emphasis> <#if date??>changed on ${date?date}</#if></para></#if>
 	</para>
-	</para>
+	</note>
 </#list>

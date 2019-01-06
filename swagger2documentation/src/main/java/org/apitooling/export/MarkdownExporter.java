@@ -187,16 +187,16 @@ public class MarkdownExporter implements Exporter {
 			Set<String> keys = schemas.keySet();
 			for (String key : keys) {							
 				ApiSchema s = schemas.get(key);
-				this.builder.heading(s.getTypeName(), lvl);
+				this.builder.heading(s.getName(), lvl);
 				
-				Set<String> skeys = s.keySet();
+				Set<String> skeys = s.getProperties().keySet();
 				if (keys.size() > 0) {
 					Table.Builder tableBuilder = new Table.Builder()
 			                .withAlignments(Table.ALIGN_LEFT, Table.ALIGN_LEFT)
 			                .addRow("", "Data Type");
 					
 					for (String skey : skeys) {
-						ApiField f = s.get(skey);
+						ApiField f = s.getProperties().get(skey);
 						tableBuilder.addRow(new ItalicText(skey), new Text(f.toString()));
 					}
 					builder.newLine();
@@ -597,13 +597,13 @@ public class MarkdownExporter implements Exporter {
 
 	private void outputSchema(ApiSchema schema, int lvl) {
 		//sb.append(TAB).append(TAB).append("Schema:").append(TAB).append(TAB).append(schema.getTypeName()).append(LF);
-		this.builder.heading(schema.getTypeName(), lvl++);
-		if (schema.size() > 0) {
-			Set<String> keys = schema.keySet();
+		this.builder.heading(schema.getName(), lvl++);
+		if (schema.getProperties().size() > 0) {
+			Set<String> keys = schema.getProperties().keySet();
 			for (String key : keys) {
 				//sb.append(TAB).append(TAB).append(TAB).append(key).append(LF);
 				this.builder.heading(key, lvl++);
-				ApiField field = schema.get(key);
+				ApiField field = schema.getProperties().get(key);
 				outputSchema(field, lvl);
 			}
 		}

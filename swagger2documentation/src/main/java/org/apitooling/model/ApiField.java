@@ -326,11 +326,13 @@ public class ApiField extends ApiElement {
 		this.required = required;
 		
 		String pRefType = null;
+		String pRealType = null;
 		String iRefType = null;
 		
 		if (p instanceof RefProperty) {
 			RefProperty rp = (RefProperty) p;
 			pRefType = rp.getSimpleRef();
+			pRealType = rp.getType();
 		}
 		
 		ArrayProperty ap = null;
@@ -357,6 +359,9 @@ public class ApiField extends ApiElement {
 		}
 				
 		if ((p.getType() != null) || (pRefType != null)) {
+			//if (pRefType != null) {
+			//	if (logger.isInfoEnabled()) logger.info("{} > {} : {} : {}", this.name, pRefType, p.getType(), pRealType);
+			//}
 			this.type = (pRefType != null) ? pRefType : p.getType();
 		}
 		if (p.getFormat() != null) {
@@ -391,6 +396,10 @@ public class ApiField extends ApiElement {
 	}
 
 	public ApiField(ApiType modelVersion, Swagger model, String key, ArrayModel schema) {
+		this(modelVersion, model, key, schema, null);
+	}
+	
+	public ApiField(ApiType modelVersion, Swagger model, String key, ArrayModel schema, String forcedItemsType) {
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, schema.getClass().getName(), schema.getVendorExtensions());
 		
 		this.describeExtensions(schema.getVendorExtensions());
@@ -405,7 +414,14 @@ public class ApiField extends ApiElement {
 				this.description = schema.getDescription();
 			}
 			Property items = schema.getItems();
-			this.itemsType = items.getType();
+
+			if (forcedItemsType != null) {
+				this.itemsRef = forcedItemsType;
+				this.itemsReference = true;
+			}
+			else {
+				this.itemsType = items.getType();
+			}
 			if (items.getFormat() != null) {
 				this.itemsFormat = items.getFormat();
 			}
@@ -471,7 +487,6 @@ public class ApiField extends ApiElement {
 	public ApiField() {
 		super();
 	}
-
 
 	public String getName() {
 		return name;
@@ -616,7 +631,7 @@ public class ApiField extends ApiElement {
 		}
 		else if (this.ref != null) {
 			sb.append(ApiField.typeName(this.ref));
-		}
+		}		
 		return sb.toString();
 	}
 
