@@ -23,7 +23,15 @@
   <#if key == "+" || key == "or" || key == "and">
   <entry namest="c1" nameend="c2" align="left"><type><emphasis>${key}</emphasis></type></entry>
   <#else> 
-  <entry><type><#if (item.dataType?? && item.dataType.required?? && item.dataType.required) || (item.required?? && item.required)><emphasis role="strong">${key!""}</emphasis><#else>${key!""}</#if></type></entry>
+  <entry><type>${key!""}</type>
+	  <variablelist>
+		  <#if (item.dataType?? && item.dataType.required?? && item.dataType.required) || (item.required?? && item.required)><varlistentry><term><type>(required)</type></term></varlistentry></#if>
+		  <#if item.deprecated?? && item.deprecated><varlistentry><term><type>(deprecated)</type></term></varlistentry></#if>
+		  <#if item.readOnly?? && item.readOnly><varlistentry><term><type>(readOnly)</type></term></varlistentry></#if>
+		  <#if item.allowEmptyValues?? && item.allowEmptyValues><varlistentry><term><type>(allowEmptyValues)</type></term></varlistentry></#if>
+		  <#if item.allowReserved?? && item.allowReserved><varlistentry><term><type>(allowReserved)</type></term></varlistentry></#if>
+	  </variablelist>
+  </entry>
   <entry><type>${xmlEscaping(item)}</type></entry>
   <entry>${md2docbook(item.description!"")}
   	<#if item.xImplementation??>
