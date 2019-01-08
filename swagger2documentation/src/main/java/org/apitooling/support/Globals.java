@@ -10,7 +10,8 @@ public class Globals {
 
 	private static Map<String, Object> map = new HashMap<>();
 	
-	public Globals() {
+	protected Globals() {
+		super();
 	}
 	
 	public static Object get(String key) {

@@ -16,6 +16,15 @@ public abstract class ApiElement {
 		super();
 	}
 
+	public static String typeName(String ref) {
+		String typeName = ref;
+		int l = ref.lastIndexOf('/');
+		if (++l > -1) {
+			typeName = ref.substring(l);
+		}
+		return typeName;			
+	}
+	
 	@SuppressWarnings("unchecked")
 	protected void describeExtensions(Map<String, Object> extensions) {
 		if (extensions == null) {

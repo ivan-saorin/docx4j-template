@@ -3,16 +3,20 @@ package org.apitooling.model;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.swagger.models.apideclaration.Model;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.headers.Header;
 import io.swagger.v3.oas.models.parameters.Parameter;
+import v2.io.swagger.models.ModelImpl;
 import v2.io.swagger.models.Swagger;
 import v2.io.swagger.models.properties.Property;
+import v2.io.swagger.models.properties.RefProperty;
 
 public class ApiParameter extends ApiElement {
 
@@ -196,11 +200,20 @@ public class ApiParameter extends ApiElement {
 			this.name = key;
 		}
 		
+		if (header instanceof RefProperty) {
+			RefProperty ref = (RefProperty) header;
+			String reference = ref.get$ref();
+			String simpleType = ref.getSimpleRef();
+			v2.io.swagger.models.Model referred = getReferredProperty(model, type, ref.get$ref());
+			describeModel(modelVersion, model, key, type, (ModelImpl) referred);			
+		}
+		else {
+			this.dataType = new ApiField(modelVersion, model, key, header, this.required);			
+		}
+		logger.info("{}:{}", this.name, this.dataType);
 		this.describeExtensions(header.getVendorExtensions());
 		
 		this.required = header.getRequired();
-		
-		this.dataType = new ApiField(modelVersion, model, key, header, this.required);
 		
 		if (header.getPosition() != null) {
 			this.idx = header.getPosition();
@@ -218,6 +231,37 @@ public class ApiParameter extends ApiElement {
 		}
 	}
 
+
+	private v2.io.swagger.models.Model getReferredProperty(Swagger model, ApiParameterType type, String ref) {
+		ref = ApiField.typeName(ref);
+		Map<String, v2.io.swagger.models.Model> definitions = model.getDefinitions();
+		v2.io.swagger.models.Model m = null;
+		if (definitions.containsKey(ref)) {
+			m = definitions.get(ref);
+		}
+		return m;
+	}
+
+	private void describeModel(ApiType modelVersion, Swagger model, String key, ApiParameterType type,
+			v2.io.swagger.models.ModelImpl referred) {
+		if (referred.getName() != null) {
+			this.name = referred.getName();
+		}
+		else {
+			this.name = key;
+		}
+			
+		this.describeExtensions(referred.getVendorExtensions());
+		
+		this.dataType = new ApiField(modelVersion, model, key, referred);
+		
+		if (referred.getAllowEmptyValue() != null) {
+			this.allowEmptyValues = referred.getAllowEmptyValue();
+		}
+		if (referred.getDescription() != null) {
+			this.description = referred.getDescription();
+		}
+	}	
 	public int getIndex() {
 		return idx;
 	}

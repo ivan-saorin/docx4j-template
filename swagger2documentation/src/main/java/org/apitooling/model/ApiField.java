@@ -648,13 +648,4 @@ public class ApiField extends ApiElement {
 			sb.append("}");
 		}
 	}
-	
-	public static String typeName(String ref) {
-		String typeName = ref;
-		int l = ref.lastIndexOf('/');
-		if (++l > -1) {
-			typeName = ref.substring(l);
-		}
-		return typeName;			
-	}
 }
