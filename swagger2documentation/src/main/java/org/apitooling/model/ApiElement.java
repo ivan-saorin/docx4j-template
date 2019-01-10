@@ -2,6 +2,7 @@ package org.apitooling.model;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -9,8 +10,9 @@ import java.util.Map;
 public abstract class ApiElement {
 
 	private static final String XIMPLEMENTATION_KEY = "x-implementation";
+	private static final String CONDITION_KEY = "condition";
 	private static final SimpleDateFormat DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.ITALY);
-	protected LinkedHashMap<String, Object> xImplementation = new LinkedHashMap<String, Object>();  
+	protected HashMap<String, Object> xImplementation = new HashMap<String, Object>();  
 	
 	public ApiElement() {
 		super();
@@ -37,12 +39,25 @@ public abstract class ApiElement {
 			if (xImplementation.containsKey("date")) {
 				//"2018-12-27T00:00:00.000+0000"
 				String date = xImplementation.get("date").toString();
-				date = date.substring(0,11);
+				date = date.substring(0,10);
 				try {
 					xImplementation.put("date", DATEFORMAT.parse(date));
 				} catch (ParseException cause) {
-					cause.printStackTrace();
+					//cause.printStackTrace();
 				}				
+			}
+			if (xImplementation.containsKey(CONDITION_KEY)) {
+				HashMap<String, Object> xCondition = (HashMap<String, Object>) xImplementation.get(CONDITION_KEY);
+				if (xCondition.containsKey("date")) {
+					//"2018-12-27T00:00:00.000+0000"
+					String date = xCondition.get("date").toString();
+					date = date.substring(0,10);
+					try {
+						xCondition.put("date", DATEFORMAT.parse(date));
+					} catch (ParseException cause) {
+						//cause.printStackTrace();
+					}
+				}
 			}
 			
 		}		
