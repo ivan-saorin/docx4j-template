@@ -74,6 +74,11 @@ public class MarkdownExporter implements Exporter {
 		this.input = input;
 	}
 
+	@Override
+	public String getStandardFileExtension() {
+		return ".md";
+	}
+
 	protected String changeExtension(String name, String extWithDot) {
 		int i = name.lastIndexOf('.');
 		if (i > -1) {
@@ -793,5 +798,4 @@ public class MarkdownExporter implements Exporter {
 		}
 		return sb.toString();
 	}
-
 }

@@ -75,6 +75,11 @@ public class DocBookExporter implements Exporter {
         context.put("input", this.input.getName());				
 	}
 
+	@Override
+	public String getStandardFileExtension() {
+		return ".xml";
+	}
+
 	protected String changeExtension(String name, String extWithDot) {
 		int i = name.lastIndexOf('.');
 		if (i > -1) {

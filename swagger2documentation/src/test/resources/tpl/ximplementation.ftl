@@ -19,7 +19,7 @@
 	</#items>
 	<para>	
 	<#if ocondition?? && condition??><para>Originally <emphasis>${ocondition}</emphasis> it was changed to <emphasis role="strong">${condition}</emphasis></para> </#if>
-	<#if description??><para>${description}</para></#if>
+	<#if description??><para>${md2docbook(description)}</para></#if>
 	<#if status??><para>Status: <emphasis role="strong">${status}</emphasis> <#if date??>changed on ${date?date}</#if></para></#if>
 	</para>
 	</note>

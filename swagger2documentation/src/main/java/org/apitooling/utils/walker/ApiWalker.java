@@ -5,7 +5,8 @@ import java.io.File;
 import org.apitooling.exceptions.WebApiException;
 import org.apitooling.export.Exporter;
 import org.apitooling.export.ExporterFactory;
-import org.apitooling.export.Exporters;
+import org.apitooling.export.ExporterOuptput;
+import org.apitooling.export.ExporterType;
 import org.apitooling.model.ApiModel;
 import org.apitooling.model.ApiToolingParser;
 import org.apitooling.support.Globals;
@@ -19,9 +20,15 @@ public class ApiWalker extends DirectoryWalker {
 	private final File sourceDir;
 	private final File destinationDir;
 	private final File temporaryDir;
+	private final ExporterType[] exporters;
 	
-	public ApiWalker(File directory, String sourceDir, String destinationDir, String temporaryDir) {
+	public ApiWalker(File directory, String sourceDir, String destinationDir, String temporaryDir, ExporterType exporter) {
+		this(directory, sourceDir, destinationDir, temporaryDir, new ExporterType[] {exporter});
+	}
+	
+	public ApiWalker(File directory, String sourceDir, String destinationDir, String temporaryDir, ExporterType[] exporters) {
 		super(directory, false);
+		this.exporters = exporters;
 		// dest
 		File d = new File(directory, destinationDir);
 		if (!d.exists()) {
@@ -54,13 +61,16 @@ public class ApiWalker extends DirectoryWalker {
 				
 				ApiModel model = ApiToolingParser.load(file);
 				
-				//Exporter exporter = ExporterFactory.export(Exporters.LOGGER, model);
-				//exporter.getOuptput();
-				String name = changeExtension(file.getName(), ".xml");
-				
-				Exporter exporter = ExporterFactory.export(Exporters.MSWORD, model, this.temporaryDir, file);
-				name = changeExtension(file.getName(), ".docx");
-				exporter.getOuptput().toFile(new File(this.destinationDir, name));
+				//String name = changeExtension(file.getName(), ".xml");
+				for (ExporterType eType : exporters) {
+					Exporter exporter = ExporterFactory.export(eType, model, this.temporaryDir, file);
+					String extension = exporter.getStandardFileExtension();
+					ExporterOuptput out = exporter.getOuptput();
+					if (extension != null) {
+						String name = changeExtension(file.getName(), extension);
+						out.toFile(new File(this.destinationDir, name));
+					}
+				}
 				/*
 				FileUtils.writeStringToFile(
 						new File(new File(this.temporaryDir), file.getName()), 
@@ -90,4 +100,19 @@ public class ApiWalker extends DirectoryWalker {
 		//fsm = new RamlFSM(new Context(this.sourceDir, this.destinationDir, this.jsonDestinationDir), builder, apiBuilder);
 	}
 
+	public File getSourceDir() {
+		return sourceDir;
+	}
+
+	public File getDestinationDir() {
+		return destinationDir;
+	}
+
+	public File getTemporaryDir() {
+		return temporaryDir;
+	}
+
+	public ExporterType[] getExporters() {
+		return exporters;
+	}
 }

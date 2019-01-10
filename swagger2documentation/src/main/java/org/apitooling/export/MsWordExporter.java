@@ -25,6 +25,11 @@ public class MsWordExporter extends DocBookExporter implements Exporter {
 	}
 
 	@Override
+	public String getStandardFileExtension() {
+		return ".docx";
+	}
+	
+	@Override
 	public ExporterOuptput getOuptput() throws IOException {
 		ExporterOuptput asciidoc = super.getOuptput();
 		String name = this.changeExtension(input.getName(), ".xml");

@@ -210,7 +210,11 @@ public class ApiParameter extends ApiElement {
 		else {
 			this.dataType = new ApiField(modelVersion, model, key, header, this.required);			
 		}
-		logger.info("{}:{}", this.name, this.dataType);
+
+		if (header.getDescription() != null) {
+			this.description = header.getDescription();
+		}
+		
 		this.describeExtensions(header.getVendorExtensions());
 		
 		this.required = header.getRequired();
@@ -225,9 +229,6 @@ public class ApiParameter extends ApiElement {
 		
 		if (header.getAllowEmptyValue() != null) {
 			this.allowEmptyValues = header.getAllowEmptyValue();
-		}
-		if (header.getDescription() != null) {
-			this.description = header.getDescription();
 		}
 	}
 
@@ -328,6 +329,108 @@ public class ApiParameter extends ApiElement {
 
 	public boolean isDeprecated() {
 		return deprecated;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (allowEmptyValues ? 1231 : 1237);
+		result = prime * result + (allowReserved ? 1231 : 1237);
+		result = prime * result + ((content == null) ? 0 : content.hashCode());
+		result = prime * result + ((dataType == null) ? 0 : dataType.hashCode());
+		result = prime * result + ((defaultValue == null) ? 0 : defaultValue.hashCode());
+		result = prime * result + (deprecated ? 1231 : 1237);
+		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + ((enumValues == null) ? 0 : enumValues.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((pattern == null) ? 0 : pattern.hashCode());
+		result = prime * result + (readOnly ? 1231 : 1237);
+		result = prime * result + (required ? 1231 : 1237);
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		ApiParameter other = (ApiParameter) obj;
+		if (allowEmptyValues != other.allowEmptyValues) {
+			return false;
+		}
+		if (allowReserved != other.allowReserved) {
+			return false;
+		}
+		if (content == null) {
+			if (other.content != null) {
+				return false;
+			}
+		} else if (!content.equals(other.content)) {
+			return false;
+		}
+		if (dataType == null) {
+			if (other.dataType != null) {
+				return false;
+			}
+		} else if (!dataType.toString().equals(other.dataType.toString())) {
+			return false;
+		}
+		if (defaultValue == null) {
+			if (other.defaultValue != null) {
+				return false;
+			}
+		} else if (!defaultValue.equals(other.defaultValue)) {
+			return false;
+		}
+		if (deprecated != other.deprecated) {
+			return false;
+		}
+		if (description == null) {
+			if (other.description != null) {
+				return false;
+			}
+		} else if (!description.equals(other.description)) {
+			return false;
+		}
+		if (enumValues == null) {
+			if (other.enumValues != null) {
+				return false;
+			}
+		} else if (!enumValues.equals(other.enumValues)) {
+			return false;
+		}
+		if (name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!name.equals(other.name)) {
+			return false;
+		}
+		if (pattern == null) {
+			if (other.pattern != null) {
+				return false;
+			}
+		} else if (!pattern.equals(other.pattern)) {
+			return false;
+		}
+		if (readOnly != other.readOnly) {
+			return false;
+		}
+		if (required != other.required) {
+			return false;
+		}
+		if (type != other.type) {
+			return false;
+		}
+		return true;
 	}
 	
 }

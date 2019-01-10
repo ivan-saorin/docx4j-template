@@ -7,9 +7,10 @@ import org.apitooling.model.ApiModel;
 
 public class ExporterFactory {
 
-	public static Exporter export(Exporters exporters, ApiModel model) {
+	public static Exporter export(ExporterType exporters, ApiModel model) {
 		switch (exporters) {
 		case LOGGER: return new LoggerExporter(model);
+		case ANALYSIS_LOGGER: return new AnalysisLoggerExporter(model);
 		case MD: return new MarkdownExporter(model);
 		case PDF:
 			return null;
@@ -18,9 +19,10 @@ public class ExporterFactory {
 		}		
 	}
 
-	public static Exporter export(Exporters exporters, ApiModel model, File temporaryDir, File file) {
+	public static Exporter export(ExporterType exporters, ApiModel model, File temporaryDir, File file) {
 		switch (exporters) {
 		case LOGGER: return new LoggerExporter(model);
+		case ANALYSIS_LOGGER: return new AnalysisLoggerExporter(model);
 		case MD: return new MarkdownExporter(model);
 		case MSWORD: return new MsWordExporter(model, temporaryDir, file);
 		case PDF:

@@ -567,4 +567,9 @@ public class LoggerExporter implements Exporter {
 		sb.append(LF);
 	}
 
+	@Override
+	public String getStandardFileExtension() {
+		return null;
+	}
+
 }
