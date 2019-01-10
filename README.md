@@ -1,9 +1,11 @@
-# docx4j-template
-基于Docx4j和各种模板技术实现的word,ppt,xls快速输出组件
+# swagger2documentation
 
+## install pandoc
 
-#参考
-https://www.docx4java.org/trac/docx4j
-http://53873039oycg.iteye.com/category/334859
-http://53873039oycg.iteye.com/category/302596
+Please install pandoc on you dev machine https://pandoc.org/installing.html
 
+## Run te tests
+
+- Place your swagger files in ```/swagger2documentation/src/test/resources/```
+- Run the test in ```/swagger2documentation/src/test/java/org/swaggertooling/Swagger2DocumentattionTest.java```
+- You'll find the result doc file in ```.\target\test-classes\api\``` folder.
