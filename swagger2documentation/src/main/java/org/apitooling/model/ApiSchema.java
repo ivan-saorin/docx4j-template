@@ -33,7 +33,8 @@ public class ApiSchema extends ApiElement {
 	private ArrayList<String> requireds = new ArrayList<String>();
 	private HashMap<String, ApiField> properties = new HashMap<String, ApiField>();
 	
-	public ApiSchema(int index, ApiType modelVersion, OpenAPI model, ApiComponents parent, String key, Schema<?> schema) {
+	public ApiSchema(ApiModel parentModel, int index, ApiType modelVersion, OpenAPI model, ApiComponents parent, String key, Schema<?> schema) {
+		super(parentModel);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, schema.getClass().getName(), schema.getExtensions());
 		this.parent = parent;
 		this.name = key;
@@ -71,7 +72,7 @@ public class ApiSchema extends ApiElement {
 	private void describeComposedSchema(ApiType modelVersion, OpenAPI model, List<Schema> list, String title) {
 		for (Schema<?> s : list) {
 			if (s.get$ref() != null) {				
-				this.properties.put("Type", new ApiField(modelVersion, model, s.get$ref(), s));
+				this.properties.put("Type", new ApiField(this.getModel(), modelVersion, model, s.get$ref(), s));
 			}
 			else if ((s.getProperties() != null) && (s.getProperties().size() > 0)) {
 				put(modelVersion, model, title, s);
@@ -80,7 +81,7 @@ public class ApiSchema extends ApiElement {
 	}
 
 	private void put(ApiType modelVersion, OpenAPI model, String key, Schema<?> s) {
-		this.properties.put(key, new ApiField(modelVersion, model, key, s));
+		this.properties.put(key, new ApiField(this.getModel(), modelVersion, model, key, s));
 		if (s.getProperties() != null) {
 			Set<String> keys = s.getProperties().keySet();
 			for (String skey : keys) {
@@ -90,8 +91,8 @@ public class ApiSchema extends ApiElement {
 		}
 	}
 
-	public ApiSchema(int index, ApiType modelVersion, Swagger model, ApiComponents parent, String key, Model schema) {
-		super();
+	public ApiSchema(ApiModel parentModel, int index, ApiType modelVersion, Swagger model, ApiComponents parent, String key, Model schema) {
+		super(parentModel);
 		this.parent = parent;
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, schema.getClass().getName(), schema.getVendorExtensions());
 		describeModel(index, modelVersion, model, key, schema);
@@ -106,8 +107,8 @@ public class ApiSchema extends ApiElement {
 		put(modelVersion, model, key, schema);
 	}
 
-	public ApiSchema(int index, ApiType modelVersion, Swagger model, String key, Property schema) {
-		super();
+	public ApiSchema(ApiModel parent, int index, ApiType modelVersion, Swagger model, String key, Property schema) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, schema.getClass().getName(), schema.getVendorExtensions());
 		describeModel(index, modelVersion, model, key, schema);
 	}
@@ -128,7 +129,7 @@ public class ApiSchema extends ApiElement {
 		}				
 		Map<String, Property> properties = schema.getProperties();
 		if (schema instanceof RefModel) {
-			this.properties.put(key, new ApiField(modelVersion, model, key, (RefModel) schema));
+			this.properties.put(key, new ApiField(this.getModel(), modelVersion, model, key, (RefModel) schema));
 		}
 		else if (schema instanceof ComposedModel) {
 			ComposedModel cm = (ComposedModel) schema;
@@ -146,11 +147,11 @@ public class ApiSchema extends ApiElement {
 				while (parent.getSchemas().containsKey(nkey)) {
 					nkey = getNewTypeName();
 				}
-				parent.getSchemas().put(nkey, new ApiSchema(0, modelVersion, model, nkey, items));
-				this.properties.put(key, new ApiField(modelVersion, model, key, array, nkey));
+				parent.getSchemas().put(nkey, new ApiSchema(this.getModel(), 0, modelVersion, model, nkey, items));
+				this.properties.put(key, new ApiField(this.getModel(), modelVersion, model, key, array, nkey));
 			}
 			else {
-				this.properties.put(key, new ApiField(modelVersion, model, key, array));
+				this.properties.put(key, new ApiField(this.getModel(), modelVersion, model, key, array));
 			}
 		}
 		else if (schema instanceof ModelImpl) {
@@ -160,7 +161,7 @@ public class ApiSchema extends ApiElement {
 			}		
 
 			if (properties == null) {
-				this.properties.put(key, new ApiField(modelVersion, model, key, (ModelImpl) schema));
+				this.properties.put(key, new ApiField(this.getModel(), modelVersion, model, key, (ModelImpl) schema));
 			}
 		}
 		
@@ -180,15 +181,15 @@ public class ApiSchema extends ApiElement {
 	private void describeComposedSchema(ApiType modelVersion, Swagger model, String key, List<Model> list, String title) {
 		for (Model m : list) {
 			if (m instanceof RefModel) {
-				this.properties.put("Type", new ApiField(modelVersion, model, ((RefModel) m).getSimpleRef(), (RefModel) m));
-				this.properties.put(title, new ApiField());
+				this.properties.put("Type", new ApiField(this.getModel(), modelVersion, model, ((RefModel) m).getSimpleRef(), (RefModel) m));
+				this.properties.put(title, new ApiField(this.getModel()));
 			}
 			else if ((m.getProperties() != null) && (m.getProperties().size() > 0)) {
 				Set<String> keys = m.getProperties().keySet();
 				for (String pkey : keys) {					
-					this.properties.put(pkey, new ApiField(modelVersion, model, pkey, m.getProperties().get(pkey)));
+					this.properties.put(pkey, new ApiField(this.getModel(), modelVersion, model, pkey, m.getProperties().get(pkey)));
 				}
-				this.properties.put(title, new ApiField());
+				this.properties.put(title, new ApiField(this.getModel()));
 			}
 		}
 	}
@@ -196,7 +197,7 @@ public class ApiSchema extends ApiElement {
 	private void put(ApiType modelVersion, Swagger model, String key, Property schema, boolean required) {
 		if (schema.getType().equalsIgnoreCase("object")) {
 			if (schema.getName() != null) {
-				this.properties.put(key, new ApiField(modelVersion, model, key, schema, required));
+				this.properties.put(key, new ApiField(this.getModel(), modelVersion, model, key, schema, required));
 			}
 			else if (schema instanceof ObjectProperty) {
 				ObjectProperty obj = (ObjectProperty) schema;				
@@ -207,7 +208,7 @@ public class ApiSchema extends ApiElement {
 						requireds.addAll(obj.getRequiredProperties());
 					}
 					//if (logger.isInfoEnabled()) logger.info("{}> requireds: {}, contains: {}", pkey, requireds, requireds.contains(pkey));
-					this.properties.put(pkey, new ApiField(modelVersion, model, pkey, obj.getProperties().get(pkey), requireds.contains(pkey)));
+					this.properties.put(pkey, new ApiField(this.getModel(), modelVersion, model, pkey, obj.getProperties().get(pkey), requireds.contains(pkey)));
 				}
 			}
 			else {
@@ -215,7 +216,7 @@ public class ApiSchema extends ApiElement {
 			}
 		}
 		else {
-			this.properties.put(key, new ApiField(modelVersion, model, key, schema, required));
+			this.properties.put(key, new ApiField(this.getModel(), modelVersion, model, key, schema, required));
 		}		
 	}
 

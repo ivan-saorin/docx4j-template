@@ -14,8 +14,8 @@ public class ApiTag extends ApiElement {
 	private String description;
 	private ApiExternalDocs externalDocs;
 	
-	public ApiTag(ApiType modelVersion, OpenAPI model, Tag tag) {
-		super();
+	public ApiTag(ApiModel parent, ApiType modelVersion, OpenAPI model, Tag tag) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, tag.getClass().getName(), tag.getExtensions());
 		describeModel(modelVersion, model, tag);
 	}
@@ -32,12 +32,12 @@ public class ApiTag extends ApiElement {
 		this.describeExtensions(tag.getExtensions());
 		
 		if (tag.getExternalDocs() != null) {
-			this.externalDocs = new ApiExternalDocs(modelVersion, model, tag.getExternalDocs());
+			this.externalDocs = new ApiExternalDocs(this.getModel(), modelVersion, model, tag.getExternalDocs());
 		}
 	}
 
-	public ApiTag(ApiType modelVersion, Swagger model, v2.io.swagger.models.Tag tag) {
-		super();
+	public ApiTag(ApiModel parent, ApiType modelVersion, Swagger model, v2.io.swagger.models.Tag tag) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, tag.getClass().getName(), tag.getVendorExtensions());
 		describeModel(modelVersion, model, tag);
 	}
@@ -54,7 +54,7 @@ public class ApiTag extends ApiElement {
 		this.describeExtensions(tag.getVendorExtensions());
 		
 		if (tag.getExternalDocs() != null) {
-			this.externalDocs = new ApiExternalDocs(modelVersion, model, tag.getExternalDocs());
+			this.externalDocs = new ApiExternalDocs(this.getModel(), modelVersion, model, tag.getExternalDocs());
 		}
 	}
 

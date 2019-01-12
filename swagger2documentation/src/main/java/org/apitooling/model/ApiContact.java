@@ -11,8 +11,8 @@ public class ApiContact extends ApiElement {
 	private String url;
 	private String email;
 	
-	public ApiContact(io.swagger.v3.oas.models.info.Contact contact) {
-		super();
+	public ApiContact(ApiModel parent, io.swagger.v3.oas.models.info.Contact contact) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", "Open Api 3.x", contact.getClass().getName(), contact.getExtensions());
 		describeModel(contact);
 	}
@@ -24,8 +24,8 @@ public class ApiContact extends ApiElement {
 		this.email = contact.getEmail();
 	}
 
-	public ApiContact(v2.io.swagger.models.Contact contact) {
-		super();		
+	public ApiContact(ApiModel parent, v2.io.swagger.models.Contact contact) {
+		super(parent);		
 		describeModel(contact);
 	}
 

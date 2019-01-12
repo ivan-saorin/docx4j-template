@@ -3,6 +3,7 @@ package org.apitooling.model;
 import java.util.ArrayList;
 import java.util.Set;
 
+import org.apitooling.model.stats.Stats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +17,7 @@ import v2.io.swagger.models.Swagger;
 public class ApiModel extends ApiElement {
 
 	private static Logger logger = LoggerFactory.getLogger(ApiModel.class);
+	private Stats stats = new Stats();
 	private ApiType modelVersion;
 	private String version;
 	private String apiVersion;	
@@ -33,13 +35,15 @@ public class ApiModel extends ApiElement {
 	
 	
 	public ApiModel(OpenAPI openApi) {
-		super();
+		super(null);
+		this.model = this;
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, openApi.getClass().getName(), openApi.getExtensions());
 		describeModel(openApi);
 	}
 
 	public ApiModel(Swagger swagger) {
-		super();
+		super(null);
+		this.model = this;
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, swagger.getClass().getName(), swagger.getVendorExtensions());
 		describeModel(swagger);
 	}
@@ -63,25 +67,25 @@ public class ApiModel extends ApiElement {
 			this.termOfService = model.getInfo().getTermsOfService();
 		}
 		if (model.getInfo().getContact() != null) {
-			this.contact = new ApiContact(model.getInfo().getContact());
+			this.contact = new ApiContact(this, model.getInfo().getContact());
 		}
 		if (model.getInfo().getLicense() != null) {
-			this.license = new ApiLicense(model.getInfo().getLicense());
+			this.license = new ApiLicense(this, model.getInfo().getLicense());
 		}
 		
 		if (model.getExternalDocs() != null) {
-			this.externalDocs = new ApiExternalDocs(modelVersion, model, model.getExternalDocs());
+			this.externalDocs = new ApiExternalDocs(this, modelVersion, model, model.getExternalDocs());
 		}
 		
 		if (model.getTags() != null) {
 			for (Tag tag : model.getTags()) {
-				this.tags.add(new ApiTag(modelVersion, model, tag));
+				this.tags.add(new ApiTag(this, modelVersion, model, tag));
 			}
 		}
 
 		if (model.getServers() != null) {
 			for (Server server : model.getServers()) {
-				this.servers.add(new ApiServer(modelVersion, model, server));
+				this.servers.add(new ApiServer(this, modelVersion, model, server));
 			}
 		}
 
@@ -94,11 +98,11 @@ public class ApiModel extends ApiElement {
 		int idx = 0;
 		Set<String> keys = model.getPaths().keySet();
 		for (String key : keys) {
-			paths.add(new ApiPath(idx++, getModelVersion(), model, key, model.getPaths().get(key)));
+			paths.add(new ApiPath(this, idx++, getModelVersion(), model, key, model.getPaths().get(key)));
 		}
 		
 		if (model.getComponents() != null) {
-			this.components = new ApiComponents(modelVersion, model, model.getComponents());
+			this.components = new ApiComponents(this, modelVersion, model, model.getComponents());
 		}
 	}
 
@@ -121,19 +125,19 @@ public class ApiModel extends ApiElement {
 			this.termOfService = model.getInfo().getTermsOfService();
 		}
 		if (model.getInfo().getContact() != null) {
-			this.contact = new ApiContact(model.getInfo().getContact());
+			this.contact = new ApiContact(this, model.getInfo().getContact());
 		}
 		if (model.getInfo().getLicense() != null) {
-			this.license = new ApiLicense(model.getInfo().getLicense());
+			this.license = new ApiLicense(this, model.getInfo().getLicense());
 		}
 		
 		if (model.getExternalDocs() != null) {
-			this.externalDocs = new ApiExternalDocs(modelVersion, model, model.getExternalDocs());
+			this.externalDocs = new ApiExternalDocs(this, modelVersion, model, model.getExternalDocs());
 		}
 		
 		if (model.getTags() != null) {
 			for (v2.io.swagger.models.Tag tag : model.getTags()) {
-				this.tags.add(new ApiTag(modelVersion, model, tag));
+				this.tags.add(new ApiTag(this, modelVersion, model, tag));
 			}
 		}
 		
@@ -156,11 +160,11 @@ public class ApiModel extends ApiElement {
 					if (model.getBasePath() != null) {
 						nurl += model.getBasePath();
 					}					
-					this.servers.add(new ApiServer(modelVersion, model, nurl));
+					this.servers.add(new ApiServer(this, modelVersion, model, nurl));
 				}
 			}
 			else {
-				this.servers.add(new ApiServer(modelVersion, model, url));
+				this.servers.add(new ApiServer(this, modelVersion, model, url));
 			}
 		}
 		
@@ -168,12 +172,12 @@ public class ApiModel extends ApiElement {
 			int idx = 0;
 			Set<String> keys = model.getPaths().keySet();
 			for (String key : keys) {			
-				paths.add(new ApiPath(idx++, getModelVersion(), model, key, model.getPaths().get(key)));
+				paths.add(new ApiPath(this, idx++, getModelVersion(), model, key, model.getPaths().get(key)));
 			}
 		}
 		
 		if (model.getDefinitions() != null) {
-			this.components = new ApiComponents(modelVersion, model, model.getDefinitions());
+			this.components = new ApiComponents(this, modelVersion, model, model.getDefinitions());
 		}
 	}
 	
@@ -234,4 +238,13 @@ public class ApiModel extends ApiElement {
 		return paths;
 	}
 
+	@Override
+	public ApiModel getModel() {
+		return this;
+	}
+	
+	@Override
+	public Stats getStats() {
+		return stats;
+	}
 }

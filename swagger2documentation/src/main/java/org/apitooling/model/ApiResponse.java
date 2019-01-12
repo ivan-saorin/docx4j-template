@@ -26,8 +26,8 @@ public class ApiResponse extends ApiElement {
 	private ArrayList<ApiLink> links = new ArrayList<ApiLink>();
 	private ApiSchema schema;
 	
-	public ApiResponse(int index, ApiType modelVersion, OpenAPI model, String key, io.swagger.v3.oas.models.responses.ApiResponse res) {
-		super();
+	public ApiResponse(ApiModel parent, int index, ApiType modelVersion, OpenAPI model, String key, io.swagger.v3.oas.models.responses.ApiResponse res) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, res.getClass().getName(), res.getExtensions());
 		describeModel(index, modelVersion, model, key, res);
 	}
@@ -38,7 +38,7 @@ public class ApiResponse extends ApiElement {
 		}
 		
 		if (res.getContent() != null) {
-			this.content = new ApiContent(modelVersion, model, key, res.getContent());
+			this.content = new ApiContent(this.getModel(), modelVersion, model, key, res.getContent());
 		}
 		
 		if (res.getDescription() != null) {
@@ -51,7 +51,7 @@ public class ApiResponse extends ApiElement {
 			Set<String> keys = res.getHeaders().keySet();
 			int idxHeader = 0;
 			for (String hkey : keys) {
-				headerAttributes.add(new ApiParameter(idxHeader++, modelVersion, model, hkey, ApiParameterType.HEADER, res.getHeaders().get(hkey)));
+				headerAttributes.add(new ApiParameter(this.getModel(), idxHeader++, modelVersion, model, hkey, ApiParameterType.HEADER, res.getHeaders().get(hkey)));
 			}
 		}
 		
@@ -59,13 +59,13 @@ public class ApiResponse extends ApiElement {
 			Set<String> keys = res.getLinks().keySet();
 			int idxLink = 0;
 			for (String lkey : keys) {
-				links.add(new ApiLink(idxLink++, modelVersion, model, lkey, res.getLinks().get(lkey)));
+				links.add(new ApiLink(this.getModel(), idxLink++, modelVersion, model, lkey, res.getLinks().get(lkey)));
 			}			
 		}
 	}
 
-	public ApiResponse(int index, ApiType modelVersion, Swagger model, List<String> produces, String key, Response res) {
-		super();
+	public ApiResponse(ApiModel parent, int index, ApiType modelVersion, Swagger model, List<String> produces, String key, Response res) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, res.getClass().getName(), res.getVendorExtensions());
 		describeModel(index, modelVersion, model, produces, key, res);
 	}
@@ -91,7 +91,7 @@ public class ApiResponse extends ApiElement {
 			Set<String> keys = res.getHeaders().keySet();
 			int idxHeader = 0;
 			for (String hkey : keys) {
-				headerAttributes.add(new ApiParameter(idxHeader++, modelVersion, model, hkey, ApiParameterType.HEADER, res.getHeaders().get(hkey)));
+				headerAttributes.add(new ApiParameter(this.getModel(), idxHeader++, modelVersion, model, hkey, ApiParameterType.HEADER, res.getHeaders().get(hkey)));
 			}
 		}
 
@@ -101,6 +101,7 @@ public class ApiResponse extends ApiElement {
 			for (String ekey : keys) {
 				Object example = res.getExamples().get(key);
 				if (example != null) {
+					this.getStats().incExamples();
 					examples.put(ekey, example.toString());
 				}
 			}
@@ -113,7 +114,7 @@ public class ApiResponse extends ApiElement {
 		
 		if (res.getSchema() != null) {
 			//this.schema = new ApiField(modelVersion, model, res.getSchema());
-			this.schema = new ApiSchema(0, modelVersion, model, "response", res.getSchema());
+			this.schema = new ApiSchema(this.getModel(), 0, modelVersion, model, "response", res.getSchema());
 		}
 		
 	}

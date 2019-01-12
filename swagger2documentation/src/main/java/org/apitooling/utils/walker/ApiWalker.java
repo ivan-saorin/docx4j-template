@@ -5,8 +5,8 @@ import java.io.File;
 import org.apitooling.exceptions.WebApiException;
 import org.apitooling.export.Exporter;
 import org.apitooling.export.ExporterFactory;
-import org.apitooling.export.ExporterOuptput;
 import org.apitooling.export.ExporterType;
+import org.apitooling.export.output.ExporterOuptput;
 import org.apitooling.model.ApiModel;
 import org.apitooling.model.ApiToolingParser;
 import org.apitooling.support.Globals;
@@ -66,7 +66,19 @@ public class ApiWalker extends DirectoryWalker {
 				
 				//String name = changeExtension(file.getName(), ".xml");
 				for (ExporterType eType : exporters) {
-					Exporter exporter = ExporterFactory.export(eType, model, this.temporaryDir, file);
+					Exporter exporter;
+					if (eType.equals(ExporterType.MSWORD)) {
+						File wordTemplate = new File(this.sourceDir, "Template.docx");
+						if (!wordTemplate.isDirectory() && wordTemplate.exists()) {
+							exporter = ExporterFactory.export(eType, model, this.temporaryDir, file, wordTemplate);
+						}
+						else {
+							exporter = ExporterFactory.export(eType, model, this.temporaryDir, file);
+						}
+					}
+					else {
+						exporter = ExporterFactory.export(eType, model, this.temporaryDir, file);
+					}
 					String extension = exporter.getStandardFileExtension();
 					ExporterOuptput out = exporter.getOuptput();
 					if (extension != null) {

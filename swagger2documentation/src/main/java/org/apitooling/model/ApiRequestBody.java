@@ -19,8 +19,8 @@ public class ApiRequestBody extends ApiElement {
 	public boolean required = false;
 	public ApiContent content;
 	
-	public ApiRequestBody(ApiType modelVersion, OpenAPI model, String name, RequestBody requestBody) {
-		super();
+	public ApiRequestBody(ApiModel parent, ApiType modelVersion, OpenAPI model, String name, RequestBody requestBody) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, requestBody.getClass().getName(), requestBody.getExtensions());
 		describeModel(modelVersion, model, name, requestBody);
 	}
@@ -35,12 +35,12 @@ public class ApiRequestBody extends ApiElement {
 			this.required = requestBody.getRequired();
 		}
 		if (requestBody.getContent() != null) {
-			this.content = new ApiContent(modelVersion, model, name, requestBody.getContent());
+			this.content = new ApiContent(this.getModel(), modelVersion, model, name, requestBody.getContent());
 		}
 	}
 	
-	public ApiRequestBody(ApiType modelVersion, Swagger model, String string, List<String> consumes, BodyParameter param) {
-		super();
+	public ApiRequestBody(ApiModel parent, ApiType modelVersion, Swagger model, String string, List<String> consumes, BodyParameter param) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, param.getClass().getName(), param.getVendorExtensions());
 		describeModel(modelVersion, model, name, consumes, param);
 	}
@@ -53,7 +53,7 @@ public class ApiRequestBody extends ApiElement {
 		}
 		this.describeExtensions(param.getVendorExtensions());
 		this.required = param.getRequired();		
-		this.content = new ApiContent(modelVersion, model, consumes, name, param.getSchema());
+		this.content = new ApiContent(this.getModel(), modelVersion, model, consumes, name, param.getSchema());
 	}
 
 	public String getName() {

@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apitooling.model.stats.Stats;
+
 public abstract class ApiElement {
 
 	private static final String XIMPLEMENTATION_KEY = "x-implementation";
@@ -13,8 +15,11 @@ public abstract class ApiElement {
 	private static final SimpleDateFormat DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.ITALY);
 	protected HashMap<String, Object> xImplementation = new HashMap<String, Object>();  
 	
-	public ApiElement() {
+	protected ApiModel model;
+	
+	public ApiElement(ApiModel parent) {
 		super();
+		this.model = parent;
 	}
 
 	public static String typeName(String ref) {
@@ -74,6 +79,21 @@ public abstract class ApiElement {
 	
 	public Map<String, Object> getxImplementation() {
 		return xImplementation;
+	}
+
+	public ApiModel getModel() {
+		if (model == null) {
+			throw new RuntimeException(new NullPointerException("model is null"));
+		}
+		return model;
 	}	
+
+	public Stats getStats() {
+		if (model == null) {
+			throw new RuntimeException(new NullPointerException("model is null"));
+		}			
+		return model.getStats();
+	}	
+
 	
 }

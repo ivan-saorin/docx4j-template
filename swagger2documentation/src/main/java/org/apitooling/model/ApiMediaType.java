@@ -20,8 +20,8 @@ public class ApiMediaType extends ApiElement {
 	private HashMap<String, ApiExample> examples = new HashMap<String, ApiExample>();
 	private ApiField schema;
 	
-	public ApiMediaType(ApiType modelVersion, OpenAPI model, MediaType mediaType) {
-		super();
+	public ApiMediaType(ApiModel parent, ApiType modelVersion, OpenAPI model, MediaType mediaType) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, mediaType.getClass().getName(), mediaType.getExtensions());
 		describeModel(modelVersion, model, mediaType);
 	}
@@ -33,7 +33,7 @@ public class ApiMediaType extends ApiElement {
 		if (mediaType.getEncoding() != null) {
 			Set<String> keys = mediaType.getEncoding().keySet();
 			for (String key : keys) {
-				this.encoding.put(key, new ApiEncoding(modelVersion, mediaType.getEncoding().get(key)));
+				this.encoding.put(key, new ApiEncoding(this.getModel(), modelVersion, mediaType.getEncoding().get(key)));
 			}
 		}
 		if (mediaType.getExample() != null) {
@@ -43,14 +43,15 @@ public class ApiMediaType extends ApiElement {
 		if (mediaType.getExamples() != null) {
 			Set<String> keys = mediaType.getExamples().keySet();
 			for (String key : keys) {
-				this.examples.put(key, new ApiExample(modelVersion, model, key, mediaType.getExamples().get(key)));
+				this.getStats().incExamples();
+				this.examples.put(key, new ApiExample(this.getModel(), modelVersion, model, key, mediaType.getExamples().get(key)));
 			}
 		}
-		this.schema = new ApiField(modelVersion, model, "", mediaType.getSchema());
+		this.schema = new ApiField(this.getModel(), modelVersion, model, "", mediaType.getSchema());
 	}
 
-	public ApiMediaType(ApiType modelVersion, Swagger model, String consume, RefModel schema) {
-		super();
+	public ApiMediaType(ApiModel parent, ApiType modelVersion, Swagger model, String consume, RefModel schema) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, model.getClass().getName(), model.getVendorExtensions());
 		describeModel(modelVersion, model, consume, schema);
 	}
@@ -60,13 +61,13 @@ public class ApiMediaType extends ApiElement {
 		
 		this.describeExtensions(schema.getVendorExtensions());
 		
-		this.encoding.put(consume, new ApiEncoding(modelVersion, consume));
+		this.encoding.put(consume, new ApiEncoding(this.getModel(), modelVersion, consume));
 		
 		if (schema.getExample() != null) {
 			this.example = schema.getExample().toString();
 		}
 		
-		this.schema = new ApiField(modelVersion, model, "schema", schema);
+		this.schema = new ApiField(this.getModel(), modelVersion, model, "schema", schema);
 	}
 
 	public HashMap<String, ApiEncoding> getEncoding() {

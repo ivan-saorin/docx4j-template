@@ -313,5 +313,9 @@
 	<#items as key, link></#items>
 	</section>
 	</#list>
+	<section xml:id="stats">
+		<title>Appendix A: Statistics</title>
+    	<#include "./stats.ftl">
+	</section>	
 </section>
 </#if>

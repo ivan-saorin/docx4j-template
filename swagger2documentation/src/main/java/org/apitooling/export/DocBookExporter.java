@@ -8,6 +8,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apitooling.exceptions.WebApiRuntimeException;
+import org.apitooling.export.output.DocBookExporterOuptput;
+import org.apitooling.export.output.ExporterOuptput;
 import org.apitooling.model.ApiModel;
 import org.apitooling.model.ApiType;
 import org.apitooling.utils.ApiUtils;
@@ -100,6 +102,7 @@ public class DocBookExporter implements Exporter {
 
         // 2.3. Generate the output
 		//outputApi(model);
-		return new ExporterOuptput(context, template);
+		return new DocBookExporterOuptput(context, template);
 	}
+
 }

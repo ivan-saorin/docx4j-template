@@ -8,10 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import io.github.gitbucket.markedj.Marked;
 import io.github.gitbucket.markedj.Options;
-import net.steppschuh.markdowngenerator.MarkdownBuilder;
-import net.steppschuh.markdowngenerator.link.Link;
-import net.steppschuh.markdowngenerator.table.Table;
-import net.steppschuh.markdowngenerator.text.emphasis.ItalicText;
 
 public class Markdown {
 
@@ -45,6 +41,7 @@ public class Markdown {
 	private Markdown() {
 	}
 	
+	/*
 	public static void commonsHttpErrorsTable(MarkdownBuilder builder) {
 		builder
 		.heading("Common Http Errors")
@@ -72,6 +69,7 @@ public class Markdown {
 		builder.newLine();
 		builder.append(tableBuilder.build());
 	}
+	*/
 
 	public static Object md2docbook(Object object) {
 		String markdown = object.toString();

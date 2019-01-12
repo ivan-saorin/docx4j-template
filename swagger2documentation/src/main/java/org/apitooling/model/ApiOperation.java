@@ -35,15 +35,16 @@ public class ApiOperation extends ApiElement {
 	private ArrayList<ApiParameter> headerAttributes = new ArrayList<ApiParameter>();
 	private ArrayList<ApiParameter> queryParams = new ArrayList<ApiParameter>();
 	
-	public ApiOperation(int idx, ApiType modelVersion, OpenAPI model, io.swagger.v3.oas.models.PathItem.HttpMethod method, Operation op) {
-		super();
+	public ApiOperation(ApiModel parent, int idx, ApiType modelVersion, OpenAPI model, io.swagger.v3.oas.models.PathItem.HttpMethod method, Operation op) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, op.getClass().getName(), op.getExtensions());
 		this.idx = idx;
 		describeModel(modelVersion, model, method, op);
 	}
 
-	private void describeModel(ApiType modelVersion, OpenAPI model, io.swagger.v3.oas.models.PathItem.HttpMethod method, Operation op) {
+	private void describeModel(ApiType modelVersion, OpenAPI model, io.swagger.v3.oas.models.PathItem.HttpMethod method, Operation op) {		
 		this.method = method.toString();
+		this.getStats().incOperations(this.method);
 		this.id = op.getOperationId();		
 		this.description = op.getDescription();
 		
@@ -54,7 +55,7 @@ public class ApiOperation extends ApiElement {
 			this.deprecated = op.getDeprecated();
 		}
 		if (op.getExternalDocs() != null) {
-			this.externalDocs = new ApiExternalDocs(modelVersion, model, op.getExternalDocs());
+			this.externalDocs = new ApiExternalDocs(this.getModel(), modelVersion, model, op.getExternalDocs());
 		}
 
 		if (op.getParameters() != null) {
@@ -63,13 +64,16 @@ public class ApiOperation extends ApiElement {
 			int idxQuery = 0;
 			for (io.swagger.v3.oas.models.parameters.Parameter param : op.getParameters()) {
 				if (param.getIn().equalsIgnoreCase("path")) {
-					pathParams.add(new ApiParameter(idxPath++, modelVersion, model, ApiParameterType.PATH, param));
+					this.getStats().incPathParams();
+					pathParams.add(new ApiParameter(this.getModel(), idxPath++, modelVersion, model, ApiParameterType.PATH, param));
 				}
 				else if (param.getIn().equalsIgnoreCase("header")) {
-					headerAttributes.add(new ApiParameter(idxHeader++, modelVersion, model, ApiParameterType.HEADER, param));
+					this.getStats().incHeaderAttrs();
+					headerAttributes.add(new ApiParameter(this.getModel(), idxHeader++, modelVersion, model, ApiParameterType.HEADER, param));
 				}
 				else if (param.getIn().equalsIgnoreCase("query")) {
-					queryParams.add(new ApiParameter(idxQuery++, modelVersion, model, ApiParameterType.QUERY, param));
+					this.getStats().incQueryParams();
+					queryParams.add(new ApiParameter(this.getModel(), idxQuery++, modelVersion, model, ApiParameterType.QUERY, param));
 				}
 				else if (param.getIn().equalsIgnoreCase("body")) {
 					if (logger.isInfoEnabled()) logger.info("  {} {}", "body", param);
@@ -78,20 +82,20 @@ public class ApiOperation extends ApiElement {
 		}		
 
 		if (op.getRequestBody() != null) {
-			this.requestBody = new ApiRequestBody(modelVersion, model, "requestBody", op.getRequestBody());
+			this.requestBody = new ApiRequestBody(this.getModel(), modelVersion, model, "requestBody", op.getRequestBody());
 		}
 		if ((op.getResponses() != null) && (op.getResponses().size() > 0)) {
 			Set<String> keys = op.getResponses().keySet();
 			int idxResponse = 0;
 			for (String key : keys) {
 				io.swagger.v3.oas.models.responses.ApiResponse res = op.getResponses().get(key);
-				this.responses.put(key, new ApiResponse(idxResponse++, modelVersion, model, key, res));
+				this.responses.put(key, new ApiResponse(this.getModel(), idxResponse++, modelVersion, model, key, res));
 			}
 		}
 	}
 
-	public ApiOperation(int idx, ApiType modelVersion, Swagger model, HttpMethod method, v2.io.swagger.models.Operation op) {
-		super();
+	public ApiOperation(ApiModel parent, int idx, ApiType modelVersion, Swagger model, HttpMethod method, v2.io.swagger.models.Operation op) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, op.getClass().getName(), op.getVendorExtensions());
 		this.idx = idx;
 		describeModel(modelVersion, model, method, op);
@@ -99,6 +103,7 @@ public class ApiOperation extends ApiElement {
 	
 	private void describeModel(ApiType modelVersion, Swagger model, HttpMethod method, v2.io.swagger.models.Operation op) {
 		this.method = method.toString();
+		this.getStats().incOperations(this.method);
 		this.id = op.getOperationId();		
 		this.description = op.getDescription();
 		
@@ -109,7 +114,7 @@ public class ApiOperation extends ApiElement {
 			this.deprecated = op.isDeprecated();
 		}		
 		if (op.getExternalDocs() != null) {
-			this.externalDocs = new ApiExternalDocs(modelVersion, model, op.getExternalDocs());
+			this.externalDocs = new ApiExternalDocs(this.getModel(), modelVersion, model, op.getExternalDocs());
 		}
 
 		int idxPath = 0;
@@ -118,16 +123,19 @@ public class ApiOperation extends ApiElement {
 
 		for (Parameter param : op.getParameters()) {
 			if (param.getIn().equalsIgnoreCase("path")) {
-				pathParams.add(new ApiParameter(idxPath++, modelVersion, model, ApiParameterType.PATH, param));
+				this.getStats().incPathParams();
+				pathParams.add(new ApiParameter(this.getModel(), idxPath++, modelVersion, model, ApiParameterType.PATH, param));
 			}
 			else if (param.getIn().equalsIgnoreCase("header")) {
-				headerAttributes.add(new ApiParameter(idxHeader++, modelVersion, model, ApiParameterType.HEADER, param));
+				this.getStats().incHeaderAttrs();
+				headerAttributes.add(new ApiParameter(this.getModel(), idxHeader++, modelVersion, model, ApiParameterType.HEADER, param));
 			}
 			else if (param.getIn().equalsIgnoreCase("query")) {
-				queryParams.add(new ApiParameter(idxQuery++, modelVersion, model, ApiParameterType.QUERY, param));
+				this.getStats().incQueryParams();
+				queryParams.add(new ApiParameter(this.getModel(), idxQuery++, modelVersion, model, ApiParameterType.QUERY, param));
 			}
 			else if (param.getIn().equalsIgnoreCase("body")) {
-				this.requestBody = new ApiRequestBody(modelVersion, model, "requestBody", op.getConsumes(), (BodyParameter) param);
+				this.requestBody = new ApiRequestBody(this.getModel(), modelVersion, model, "requestBody", op.getConsumes(), (BodyParameter) param);
 			}
 		}
 		
@@ -136,7 +144,7 @@ public class ApiOperation extends ApiElement {
 			int idxResponse = 0;
 			for (String key : keys) {
 				Response res = op.getResponses().get(key);
-				this.responses.put(key, new ApiResponse(idxResponse++, modelVersion, model, op.getProduces(), key, res));
+				this.responses.put(key, new ApiResponse(this.getModel(), idxResponse++, modelVersion, model, op.getProduces(), key, res));
 			}
 		}
 		

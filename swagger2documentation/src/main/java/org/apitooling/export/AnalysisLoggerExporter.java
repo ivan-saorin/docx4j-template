@@ -8,6 +8,8 @@ import org.apitooling.analysis.ApiAnalysis;
 import org.apitooling.analysis.ParamName2PathName;
 import org.apitooling.analysis.PathParameters;
 import org.apitooling.exceptions.WebApiRuntimeException;
+import org.apitooling.export.output.ExporterOuptput;
+import org.apitooling.export.output.StringExporterOuptput;
 import org.apitooling.model.ApiModel;
 import org.apitooling.model.ApiParameter;
 import org.slf4j.Logger;
@@ -40,7 +42,7 @@ public class AnalysisLoggerExporter implements Exporter {
 		StringBuilder sb = outputApi(analysis);
 		if (logger.isInfoEnabled()) logger.info(System.lineSeparator() + sb.toString());
 		
-		return new ExporterOuptput(sb.toString());
+		return new StringExporterOuptput(sb.toString());
 	}
 	
 	private StringBuilder outputApi(ApiAnalysis analysis) {

@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apitooling.exceptions.WebApiRuntimeException;
+import org.apitooling.export.output.ExporterOuptput;
+import org.apitooling.export.output.StringExporterOuptput;
 import org.apitooling.model.ApiContact;
 import org.apitooling.model.ApiContent;
 import org.apitooling.model.ApiExample;
@@ -54,7 +56,7 @@ public class LoggerExporter implements Exporter {
 		StringBuilder sb = outputApi(model);
 		if (logger.isInfoEnabled()) logger.info(System.lineSeparator() + sb.toString());
 		
-		return new ExporterOuptput(sb.toString());
+		return new StringExporterOuptput(sb.toString());
 	}
 
 	private StringBuilder outputApi(ApiModel model2) {

@@ -31,8 +31,8 @@ public class ApiComponents extends ApiElement {
 	private HashMap<String, ApiLink> links = new HashMap<String, ApiLink>();
 	// private Map<String, APiCallback> callbacks = null;
 
-	public ApiComponents(ApiType modelVersion, OpenAPI model, Components components) {
-		super();
+	public ApiComponents(ApiModel parent, ApiType modelVersion, OpenAPI model, Components components) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, components.getClass().getName(), components.getExtensions());
 		describeModel(modelVersion, model, components);
 	}
@@ -45,14 +45,14 @@ public class ApiComponents extends ApiElement {
 			for (String key : keys) {
 				Schema s = components.getSchemas().get(key);
 				HashMap<String, ApiSchema> map = isSimpleType(s) ? this.simpleTypes : this.schemas;
-				map.put(key, new ApiSchema(i++, modelVersion, model, this, key, s));
+				map.put(key, new ApiSchema(this.getModel(), i++, modelVersion, model, this, key, s));
 			}
 		}
 		if (components.getResponses() != null) {
 			Set<String> keys = components.getResponses().keySet();
 			int i = 0;
 			for (String key : keys) {
-				this.responses.put(key, new ApiResponse(i++, modelVersion, model, key, components.getResponses().get(key)));
+				this.responses.put(key, new ApiResponse(this.getModel(), i++, modelVersion, model, key, components.getResponses().get(key)));
 			}			
 		}
 		if (components.getParameters() != null) {
@@ -67,33 +67,33 @@ public class ApiComponents extends ApiElement {
 				} else if (in.equalsIgnoreCase("query")) {
 					type = ApiParameterType.QUERY;
 				}
-				this.parameters.put(key, new ApiParameter(i++, modelVersion, model, type, p));
+				this.parameters.put(key, new ApiParameter(this.getModel(), i++, modelVersion, model, type, p));
 			}			
 		}
 		if (components.getExamples() != null) {
 			Set<String> keys = components.getExamples().keySet();
 			for (String key : keys) {
-				this.examples.put(key, new ApiExample(modelVersion, model, key, components.getExamples().get(key)));
+				this.examples.put(key, new ApiExample(this.getModel(), modelVersion, model, key, components.getExamples().get(key)));
 			}			
 		}
 		if (components.getRequestBodies() != null) {
 			Set<String> keys = components.getRequestBodies().keySet();
 			for (String key : keys) {
-				this.requestBodies.put(key, new ApiRequestBody(modelVersion, model, key, components.getRequestBodies().get(key)));
+				this.requestBodies.put(key, new ApiRequestBody(this.getModel(), modelVersion, model, key, components.getRequestBodies().get(key)));
 			}			
 		}
 		if (components.getHeaders() != null) {
 			Set<String> keys = components.getHeaders().keySet();
 			int i = 0;
 			for (String key : keys) {
-				this.parameters.put(key, new ApiParameter(i++, modelVersion, model, key, ApiParameterType.HEADER, components.getHeaders().get(key)));
+				this.parameters.put(key, new ApiParameter(this.getModel(), i++, modelVersion, model, key, ApiParameterType.HEADER, components.getHeaders().get(key)));
 			}
 		}
 		if (components.getLinks() != null) {
 			Set<String> keys = components.getLinks().keySet();
 			int i = 0;
 			for (String key : keys) {
-				this.links.put(key, new ApiLink(i++, modelVersion, model, key, components.getLinks().get(key)));
+				this.links.put(key, new ApiLink(this.getModel(),i++, modelVersion, model, key, components.getLinks().get(key)));
 			}
 		}
 	}
@@ -111,8 +111,8 @@ public class ApiComponents extends ApiElement {
 		return b;
 	}
 
-	public ApiComponents(ApiType modelVersion, Swagger model, Map<String, Model> definitions) {
-		super();
+	public ApiComponents(ApiModel parent, ApiType modelVersion, Swagger model, Map<String, Model> definitions) {
+		super(parent);
 		describeModel(modelVersion, model, definitions);
 	}
 	
@@ -123,7 +123,7 @@ public class ApiComponents extends ApiElement {
 			for (String key : keys) {
 				Model m = definitions.get(key);
 				HashMap<String, ApiSchema> map = isSimpleType(m) ? this.simpleTypes : this.schemas;
-				map.put(key, new ApiSchema(i++, modelVersion, model, this, key, m));
+				map.put(key, new ApiSchema(this.getModel(), i++, modelVersion, model, this, key, m));
 			}
 		}
 		

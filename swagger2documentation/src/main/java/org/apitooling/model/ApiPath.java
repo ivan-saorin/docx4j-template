@@ -20,14 +20,17 @@ public class ApiPath extends ApiElement {
 	public String path;
 	public ArrayList<ApiOperation> operations = new ArrayList<ApiOperation>(); 
 	
-	public ApiPath(int idx, ApiType modelVersion, OpenAPI model, String key, PathItem path) {
-		super();
+	public ApiPath(ApiModel parent, int idx, ApiType modelVersion, OpenAPI model, String key, PathItem path) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, path.getClass().getName(), path.getExtensions());
 		this.idx = idx;
 		describeModel(modelVersion, model, key, path);
 	}
 
-	public ApiPath(int idx2, ApiType modelVersion, Swagger model, String key, Path path) {
+	public ApiPath(ApiModel parent, int idx2, ApiType modelVersion, Swagger model, String key, Path path) {
+		super(parent);
+
+		this.getStats().incPaths();
 		this.path = key;
 		//if (logger.isInfoEnabled()) logger.info("Path {}:", this.path);
 		this.describeExtensions(path.getVendorExtensions());
@@ -36,35 +39,36 @@ public class ApiPath extends ApiElement {
 		
 		Set<HttpMethod> keys = path.getOperationMap().keySet();
 		for (HttpMethod method : keys) {
-			operations.add(new ApiOperation(idx++, modelVersion, model, method, path.getOperationMap().get(method)));
+			operations.add(new ApiOperation(this.getModel(), idx++, modelVersion, model, method, path.getOperationMap().get(method)));
 		}		
 	}
 
-	private void describeModel(ApiType modelVersion, OpenAPI model, String key, PathItem path) {		
+	private void describeModel(ApiType modelVersion, OpenAPI model, String key, PathItem path) {
+		this.getStats().incPaths();
 		this.path = key;
 		//if (logger.isInfoEnabled()) logger.info("Path {}:", this.path);
 		this.describeExtensions(path.getExtensions());
 		int idx = 0;
 		if (path.getHead() != null) {
-			operations.add(new ApiOperation(idx++, modelVersion, model, io.swagger.v3.oas.models.PathItem.HttpMethod.HEAD, path.getHead()));
+			operations.add(new ApiOperation(this.getModel(), idx++, modelVersion, model, io.swagger.v3.oas.models.PathItem.HttpMethod.HEAD, path.getHead()));
 		}
 		if (path.getOptions() != null) {
-			operations.add(new ApiOperation(idx++, modelVersion, model, io.swagger.v3.oas.models.PathItem.HttpMethod.OPTIONS, path.getOptions()));
+			operations.add(new ApiOperation(this.getModel(), idx++, modelVersion, model, io.swagger.v3.oas.models.PathItem.HttpMethod.OPTIONS, path.getOptions()));
 		}
 		if (path.getGet() != null) {
-			operations.add(new ApiOperation(idx++, modelVersion, model, io.swagger.v3.oas.models.PathItem.HttpMethod.GET, path.getGet()));
+			operations.add(new ApiOperation(this.getModel(), idx++, modelVersion, model, io.swagger.v3.oas.models.PathItem.HttpMethod.GET, path.getGet()));
 		}
 		if (path.getPost() != null) {
-			operations.add(new ApiOperation(idx++, modelVersion, model, io.swagger.v3.oas.models.PathItem.HttpMethod.POST, path.getPost()));
+			operations.add(new ApiOperation(this.getModel(), idx++, modelVersion, model, io.swagger.v3.oas.models.PathItem.HttpMethod.POST, path.getPost()));
 		}		
 		if (path.getPut() != null) {
-			operations.add(new ApiOperation(idx++, modelVersion, model, io.swagger.v3.oas.models.PathItem.HttpMethod.PUT, path.getPut()));
+			operations.add(new ApiOperation(this.getModel(), idx++, modelVersion, model, io.swagger.v3.oas.models.PathItem.HttpMethod.PUT, path.getPut()));
 		}
 		if (path.getPatch() != null) {
-			operations.add(new ApiOperation(idx++, modelVersion, model, io.swagger.v3.oas.models.PathItem.HttpMethod.PATCH, path.getPatch()));
+			operations.add(new ApiOperation(this.getModel(), idx++, modelVersion, model, io.swagger.v3.oas.models.PathItem.HttpMethod.PATCH, path.getPatch()));
 		}
 		if (path.getDelete() != null) {
-			operations.add(new ApiOperation(idx++, modelVersion, model, io.swagger.v3.oas.models.PathItem.HttpMethod.DELETE, path.getDelete()));
+			operations.add(new ApiOperation(this.getModel(), idx++, modelVersion, model, io.swagger.v3.oas.models.PathItem.HttpMethod.DELETE, path.getDelete()));
 		}
 	}
 

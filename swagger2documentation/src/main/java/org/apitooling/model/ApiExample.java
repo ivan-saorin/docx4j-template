@@ -14,8 +14,8 @@ public class ApiExample extends ApiElement {
     private String description = null;
     private String value = null;
 
-	public ApiExample(ApiType modelVersion, OpenAPI model, String key, Example example) {
-		super();
+	public ApiExample(ApiModel parent, ApiType modelVersion, OpenAPI model, String key, Example example) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, example.getClass().getName(), example.getExtensions());
 		defineModel(modelVersion, model, key, example);
 	}
@@ -34,6 +34,7 @@ public class ApiExample extends ApiElement {
 		} else if (example.getExternalValue() != null) {
 			this.value = example.getExternalValue();
 		}
+		this.getStats().incExamples();
 	}
 
 	public String getSummary() {

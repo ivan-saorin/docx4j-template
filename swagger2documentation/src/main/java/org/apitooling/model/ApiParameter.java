@@ -39,15 +39,15 @@ public class ApiParameter extends ApiElement {
 	private boolean allowReserved = false;
 	private boolean deprecated = false;
 	
-	public ApiParameter(int idx, ApiType modelVersion, OpenAPI model, ApiParameterType type, Parameter param) {
-		super();
+	public ApiParameter(ApiModel parent, int idx, ApiType modelVersion, OpenAPI model, ApiParameterType type, Parameter param) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, param.getClass().getName(), param.getExtensions());
 		this.idx = idx;
 		this.type = type;
 		describeModel(modelVersion, model, param);
 	}
 
-	private void describeModel(ApiType modelVersion, OpenAPI model, Parameter param) {
+	private void describeModel(ApiType modelVersion, OpenAPI model, Parameter param) {		
 		this.describeExtensions(param.getExtensions());
 		if (param.get$ref() != null) {
 			this.ref = param.get$ref();
@@ -55,7 +55,7 @@ public class ApiParameter extends ApiElement {
 
 		this.name = param.getName();
 		if (param.getSchema() != null) {
-			this.dataType = new ApiField(modelVersion, model, this.name, param.getSchema());
+			this.dataType = new ApiField(this.getModel(), modelVersion, model, this.name, param.getSchema());
 		}
 		this.description = param.getDescription();
 		this.required = param.getRequired();
@@ -69,7 +69,8 @@ public class ApiParameter extends ApiElement {
 		if (param.getExamples() != null) {
 			Set<String> keys = param.getExamples().keySet();
 			for (String key : keys) {
-				this.examples.put(key, new ApiExample(modelVersion, model, key, param.getExamples().get(key)));
+				this.getStats().incExamples();
+				this.examples.put(key, new ApiExample(this.getModel(), modelVersion, model, key, param.getExamples().get(key)));
 			}
 		}
 		
@@ -86,13 +87,13 @@ public class ApiParameter extends ApiElement {
 		}
 
 		if (param.getContent() != null) {
-			this.content = new ApiContent(modelVersion, model, this.name, param.getContent());
+			this.content = new ApiContent(this.getModel(), modelVersion, model, this.name, param.getContent());
 		}
 
 	}
 
-	public ApiParameter(int idx, ApiType modelVersion, Swagger model, ApiParameterType type, v2.io.swagger.models.parameters.Parameter param) {
-		super();
+	public ApiParameter(ApiModel parent, int idx, ApiType modelVersion, Swagger model, ApiParameterType type, v2.io.swagger.models.parameters.Parameter param) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, param.getClass().getName(), param.getVendorExtensions());
 		this.idx = idx;
 		this.type = type;
@@ -109,17 +110,17 @@ public class ApiParameter extends ApiElement {
 
 		if (param instanceof v2.io.swagger.models.parameters.PathParameter) {
 			v2.io.swagger.models.parameters.PathParameter p = (v2.io.swagger.models.parameters.PathParameter) param;			
-			this.dataType = new ApiField(modelVersion, model, this.name, p, param.getRequired());
+			this.dataType = new ApiField(this.getModel(), modelVersion, model, this.name, p, param.getRequired());
 		}
 
 		if (param instanceof v2.io.swagger.models.parameters.HeaderParameter) {
 			v2.io.swagger.models.parameters.HeaderParameter p = (v2.io.swagger.models.parameters.HeaderParameter) param;
-			this.dataType = new ApiField(modelVersion, model, this.name, p, param.getRequired());
+			this.dataType = new ApiField(this.getModel(), modelVersion, model, this.name, p, param.getRequired());
 		}
 
 		if (param instanceof v2.io.swagger.models.parameters.QueryParameter) {
 			v2.io.swagger.models.parameters.QueryParameter p = (v2.io.swagger.models.parameters.QueryParameter) param;
-			this.dataType = new ApiField(modelVersion, model, this.name, p, param.getRequired());
+			this.dataType = new ApiField(this.getModel(), modelVersion, model, this.name, p, param.getRequired());
 		}
 
 		if (param.isReadOnly() != null) {
@@ -135,8 +136,8 @@ public class ApiParameter extends ApiElement {
 		
 	}
 
-	public ApiParameter(int i, ApiType modelVersion, OpenAPI model, String key, ApiParameterType type, Header header) {
-		super();
+	public ApiParameter(ApiModel parent, int i, ApiType modelVersion, OpenAPI model, String key, ApiParameterType type, Header header) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, header.getClass().getName(), header.getExtensions());
 		describeModel(modelVersion, model, key, type, header);
 	}
@@ -148,7 +149,7 @@ public class ApiParameter extends ApiElement {
 			this.ref = param.get$ref();
 		}
 		if (param.getSchema() != null) {
-			this.dataType = new ApiField(modelVersion, model, this.name, param.getSchema());
+			this.dataType = new ApiField(this.getModel(), modelVersion, model, this.name, param.getSchema());
 		}
 		if (param.getDescription() != null) {
 			this.description = param.getDescription();
@@ -169,7 +170,8 @@ public class ApiParameter extends ApiElement {
 		if (param.getExamples() != null) {
 			Set<String> keys = param.getExamples().keySet();
 			for (String ekey : keys) {
-				this.examples.put(key, new ApiExample(modelVersion, model, ekey, param.getExamples().get(ekey)));
+				this.getStats().incExamples();
+				this.examples.put(key, new ApiExample(this.getModel(), modelVersion, model, ekey, param.getExamples().get(ekey)));
 			}
 		}
 		
@@ -178,14 +180,14 @@ public class ApiParameter extends ApiElement {
 		}
 
 		if (param.getContent() != null) {
-			this.content = new ApiContent(modelVersion, model, this.name, param.getContent());
+			this.content = new ApiContent(this.getModel(), modelVersion, model, this.name, param.getContent());
 		}
 
 		//if (logger.isInfoEnabled()) logger.info("    {} {}[{}]: {} - {}", (this.deprecated) ? "deprecated" : "", this.name, this.type, this.dataType, this.description);
 	}
 	
-	public ApiParameter(int i, ApiType modelVersion, Swagger model, String key, ApiParameterType type, Property header) {
-		super();
+	public ApiParameter(ApiModel parent, int i, ApiType modelVersion, Swagger model, String key, ApiParameterType type, Property header) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, header.getClass().getName(), header.getVendorExtensions());
 		describeModel(modelVersion, model, key, type, header);
 	}
@@ -207,7 +209,7 @@ public class ApiParameter extends ApiElement {
 			describeModel(modelVersion, model, key, type, (ModelImpl) referred);			
 		}
 		else {
-			this.dataType = new ApiField(modelVersion, model, key, header, this.required);			
+			this.dataType = new ApiField(this.getModel(), modelVersion, model, key, header, this.required);			
 		}
 
 		if (header.getDescription() != null) {
@@ -253,7 +255,7 @@ public class ApiParameter extends ApiElement {
 			
 		this.describeExtensions(referred.getVendorExtensions());
 		
-		this.dataType = new ApiField(modelVersion, model, key, referred);
+		this.dataType = new ApiField(this.getModel(), modelVersion, model, key, referred);
 		
 		if (referred.getAllowEmptyValue() != null) {
 			this.allowEmptyValues = referred.getAllowEmptyValue();

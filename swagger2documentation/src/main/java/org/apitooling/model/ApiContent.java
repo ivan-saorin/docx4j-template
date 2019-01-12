@@ -22,20 +22,24 @@ public class ApiContent extends HashMap<String, ApiMediaType> {
 	private static final String XIMPLEMENTATION_KEY = "x-implementation";	
 	protected HashMap<String, Object> xImplementation = new HashMap<String, Object>();  
 
-	public ApiContent(ApiType modelVersion, OpenAPI model, String name, Content content) {
+	private ApiModel parent;
+	
+	public ApiContent(ApiModel parent, ApiType modelVersion, OpenAPI model, String name, Content content) {
 		super();
+		this.parent = parent;
 		describeModel(modelVersion, model, name, content);
 	}
 
 	private void describeModel(ApiType modelVersion, OpenAPI model, String name, Content content) {
 		Set<String> keys = content.keySet();
 		for (String key : keys) {
-			this.put(key, new ApiMediaType(modelVersion, model, content.get(key)));
+			this.put(key, new ApiMediaType(parent, modelVersion, model, content.get(key)));
 		}		
 	}
 
-	public ApiContent(ApiType modelVersion, Swagger model, List<String> consumes, String name, Model schema) {
+	public ApiContent(ApiModel parent, ApiType modelVersion, Swagger model, List<String> consumes, String name, Model schema) {
 		super();
+		this.parent = parent;
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, schema.getClass().getName(), schema.getVendorExtensions());
 		describeModel(modelVersion, model, consumes, name, (RefModel) schema);
 	}
@@ -44,10 +48,10 @@ public class ApiContent extends HashMap<String, ApiMediaType> {
 		this.describeExtensions(schema.getVendorExtensions());
 		if (consumes != null) {
 			for (String consume : consumes) {
-				this.put(consume, new ApiMediaType(modelVersion, model, consume, schema));
+				this.put(consume, new ApiMediaType(parent, modelVersion, model, consume, schema));
 			}
 		} else {
-			this.put("*/*", new ApiMediaType(modelVersion, model, "*/*", schema));
+			this.put("*/*", new ApiMediaType(parent, modelVersion, model, "*/*", schema));
 		}
 	}
 

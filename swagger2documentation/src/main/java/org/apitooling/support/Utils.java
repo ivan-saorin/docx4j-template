@@ -21,7 +21,7 @@ public class Utils {
 	}
 
 	public static String[] parseUriParameters(String href) {
-		ArrayList<String> result = new ArrayList<>();
+		ArrayList<String> result = new ArrayList<String>();
 		Pattern p = Pattern.compile("\\{(.*?)\\}", Pattern.DOTALL);
 		Matcher matcher = p.matcher(href);
 		while (matcher.find()) {

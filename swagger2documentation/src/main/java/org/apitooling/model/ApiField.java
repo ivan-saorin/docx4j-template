@@ -59,8 +59,8 @@ public class ApiField extends ApiElement {
 
 	private boolean required = false;
 	
-	public ApiField(ApiType modelVersion, Swagger model, String name, PathParameter param, boolean required) {
-		super();
+	public ApiField(ApiModel parent, ApiType modelVersion, Swagger model, String name, PathParameter param, boolean required) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, param.getClass().getName(), param.getVendorExtensions());
 		this.describeExtensions(param.getVendorExtensions());
 		describeModel(model, name, param, required);
@@ -80,7 +80,7 @@ public class ApiField extends ApiElement {
 		if (logger.isInfoEnabled()) logger.info("        {}> param.getMaximum: {}", name, param.getMaximum());
 		if (logger.isInfoEnabled()) logger.info("        {}> param.getMultipleOf: {}", name, param.getMultipleOf());
 		if (logger.isInfoEnabled()) logger.info("        {}> param.getItems: {}", name, param.getItems());
-		*/		
+		*/				
 		this.describeModel(model, name, param.getDescription(), 
 				param.getType(), param.getFormat(), param.getPattern(), required, param.getEnum(), param.getExample(), 
 				(param.getMinLength() != null) ? param.getMinLength() : -1, 
@@ -91,10 +91,11 @@ public class ApiField extends ApiElement {
 				(param.getMaximum() != null) ? param.getMaximum() : new BigDecimal(0),
 				(param.getMultipleOf() != null) ? param.getMultipleOf() : new Float(0.0),
 				param.getItems());
+		this.getStats().incPathParams();
 	}
 
-	public ApiField(ApiType modelVersion, Swagger model, String name, HeaderParameter param, boolean required) {
-		super();
+	public ApiField(ApiModel parent, ApiType modelVersion, Swagger model, String name, HeaderParameter param, boolean required) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, param.getClass().getName(), param.getVendorExtensions());
 		this.describeExtensions(param.getVendorExtensions());
 		describeModel(model, name, param, required);
@@ -125,10 +126,11 @@ public class ApiField extends ApiElement {
 				(param.getMaximum() != null) ? param.getMaximum() : new BigDecimal(0),
 				(param.getMultipleOf() != null) ? param.getMultipleOf() : new Float(0.0),
 				param.getItems());
+		this.getStats().incHeaderAttrs();
 	}
 	
-	public ApiField(ApiType modelVersion, Swagger model, String name, QueryParameter param, boolean required) {
-		super();
+	public ApiField(ApiModel parent, ApiType modelVersion, Swagger model, String name, QueryParameter param, boolean required) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, param.getClass().getName(), param.getVendorExtensions());
 		this.describeExtensions(param.getVendorExtensions());
 		describeModel(model, name, param, required);
@@ -159,6 +161,7 @@ public class ApiField extends ApiElement {
 				(param.getMaximum() != null) ? param.getMaximum() : new BigDecimal(0),
 				(param.getMultipleOf() != null) ? param.getMultipleOf() : new Float(0.0),
 				param.getItems());
+		this.getStats().incQueryParams();
 	}
 	
 	private void describeModel(Swagger model, String name, String description, String type, String format, String pattern, boolean required, List<String> enumValues, Object example, 
@@ -198,12 +201,12 @@ public class ApiField extends ApiElement {
 		
 		if (enumValues != null) {
 			this.enumValues.addAll(enumValues);
-		}
+		}		
 		//if (logger.isInfoEnabled()) logger.info("        {}> type: {}, format: {}", this.name, this.type, this.format);
 	}
 
-	public ApiField(ApiType modelVersion, OpenAPI model, String name, Schema<?> schema) {
-		super();
+	public ApiField(ApiModel parent, ApiType modelVersion, OpenAPI model, String name, Schema<?> schema) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, schema.getClass().getName(), schema.getExtensions());
 		describeSchemaField(modelVersion, model, name, schema);
 	}
@@ -279,6 +282,7 @@ public class ApiField extends ApiElement {
 				this.example = example.toString();
 			}
 			if (examples != null) {
+				this.getStats().incExamples(examples.size());
 				this.examples.putAll(examples);
 			}			
 			if (schema.getFormat() != null) {
@@ -299,14 +303,14 @@ public class ApiField extends ApiElement {
 		}
 	}
 
-	public ApiField(ApiType modelVersion, Swagger model, String key, Property property) {
-		super();
+	public ApiField(ApiModel parent, ApiType modelVersion, Swagger model, String key, Property property) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, property.getClass().getName(), property.getVendorExtensions());
 		describeModel(modelVersion, model, key, property, false);
 	}
 
-	public ApiField(ApiType modelVersion, Swagger model, String key, Property property, boolean required) {
-		super();
+	public ApiField(ApiModel parent, ApiType modelVersion, Swagger model, String key, Property property, boolean required) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, property.getClass().getName(), property.getVendorExtensions());
 		describeModel(modelVersion, model, key, property, required);
 	}
@@ -382,8 +386,8 @@ public class ApiField extends ApiElement {
 		
 	}
 
-	public ApiField(ApiType modelVersion, Swagger model, String name, RefModel schema) {
-		super();
+	public ApiField(ApiModel parent, ApiType modelVersion, Swagger model, String name, RefModel schema) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, schema.getClass().getName(), schema.getVendorExtensions());
 		describeModel(modelVersion, model, name, schema);		
 	}
@@ -394,13 +398,13 @@ public class ApiField extends ApiElement {
 		}			
 	}
 
-	public ApiField(ApiType modelVersion, Swagger model, String key, ArrayModel schema) {
-		this(modelVersion, model, key, schema, null);
+	public ApiField(ApiModel parent, ApiType modelVersion, Swagger model, String key, ArrayModel schema) {
+		this(parent, modelVersion, model, key, schema, null);
 	}
 	
-	public ApiField(ApiType modelVersion, Swagger model, String key, ArrayModel schema, String forcedItemsType) {
+	public ApiField(ApiModel parent, ApiType modelVersion, Swagger model, String key, ArrayModel schema, String forcedItemsType) {
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, schema.getClass().getName(), schema.getVendorExtensions());
-		
+		super(parent);
 		this.describeExtensions(schema.getVendorExtensions());
 		
 		this.name = key;
@@ -434,6 +438,7 @@ public class ApiField extends ApiElement {
 				this.example = example.toString();
 			}
 			if (examples != null) {
+				this.getStats().incExamples(examples.size());
 				this.examples.putAll(examples);
 			}			
 			if (schema.getDescription() != null) {
@@ -442,8 +447,9 @@ public class ApiField extends ApiElement {
 		}
 	}
 	
-	public ApiField(ApiType modelVersion, Swagger model, String key, ModelImpl schema) {
+	public ApiField(ApiModel parent, ApiType modelVersion, Swagger model, String key, ModelImpl schema) {
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, schema.getClass().getName(), schema.getVendorExtensions());
+		super(parent);
 		this.name = key;
 		if (schema.getRequired() != null) {
 			this.required = schema.getRequired().contains(name);
@@ -470,6 +476,7 @@ public class ApiField extends ApiElement {
 				this.example = example.toString();
 			}
 			if (examples != null) {
+				this.getStats().incExamples(examples.size());
 				this.examples.putAll(examples);
 			}			
 			if (schema.getFormat() != null) {
@@ -483,8 +490,8 @@ public class ApiField extends ApiElement {
 		}
 	}
 	
-	public ApiField() {
-		super();
+	public ApiField(ApiModel parent) {
+		super(parent);
 	}
 
 	public String getName() {

@@ -98,7 +98,7 @@ public class ValidationMessage  {
 	}
 
 	private List<String> getFieldAsList(String fieldname) {
-		List<String> result = new ArrayList<>();
+		List<String> result = new ArrayList<String>();
 		JsonNode node = getField(fieldname);
 		if (node == null) {
 			return result;

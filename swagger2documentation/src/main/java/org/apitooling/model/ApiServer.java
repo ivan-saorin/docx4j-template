@@ -18,8 +18,8 @@ public class ApiServer extends ApiElement {
 	private String url;
 	private HashMap<String, ApiServerVariable> variables = new HashMap<String, ApiServerVariable>();
 	
-	public ApiServer(ApiType modelVersion, OpenAPI model, Server server) {
-		super();
+	public ApiServer(ApiModel parent, ApiType modelVersion, OpenAPI model, Server server) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, server.getClass().getName(), server.getExtensions());
 		describeModel(modelVersion, model, server);
 	}
@@ -39,14 +39,14 @@ public class ApiServer extends ApiElement {
 			Set<String> keys = server.getVariables().keySet();
 			int idx = 0;
 			for (String key : keys) {
-				variables.put(key, new ApiServerVariable(idx++, modelVersion, model, key, server.getVariables().get(key)));
+				variables.put(key, new ApiServerVariable(this.getModel(), idx++, modelVersion, model, key, server.getVariables().get(key)));
 			}						
 		}
 		
 	}
 
-	public ApiServer(ApiType modelVersion, Swagger model, String url) {
-		super();
+	public ApiServer(ApiModel parent, ApiType modelVersion, Swagger model, String url) {
+		super(parent);
 		describeModel(modelVersion, model, url);
 	}
 

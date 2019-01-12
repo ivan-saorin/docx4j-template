@@ -23,8 +23,8 @@ public class ApiLink extends ApiElement {
 	private Object requestBody;
 	private ApiServer server;
 	
-	public ApiLink(int index, ApiType modelVersion, OpenAPI model, String key, Link link) {
-		super();
+	public ApiLink(ApiModel parent, int index, ApiType modelVersion, OpenAPI model, String key, Link link) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, link.getClass().getName(), link.getExtensions());
 		describeModel(index, modelVersion, model, key, link);
 	}
@@ -43,7 +43,7 @@ public class ApiLink extends ApiElement {
 			Set<String> keys = link.getHeaders().keySet();
 			int idxHeader = 0;
 			for (String hkey : keys) {
-				headerAttributes.add(new ApiParameter(idxHeader++, modelVersion, model, hkey, ApiParameterType.HEADER, link.getHeaders().get(hkey)));
+				headerAttributes.add(new ApiParameter(this.getModel(), idxHeader++, modelVersion, model, hkey, ApiParameterType.HEADER, link.getHeaders().get(hkey)));
 			}			
 		}
 		if (link.getOperationId() != null) {
@@ -59,7 +59,7 @@ public class ApiLink extends ApiElement {
 			this.requestBody = link.getRequestBody();
 		}
 		if (link.getServer() != null) {
-			this.server = new ApiServer(modelVersion, model, link.getServer());
+			this.server = new ApiServer(this.getModel(), modelVersion, model, link.getServer());
 		}
 		
 	}

@@ -11,9 +11,17 @@ public class ExporterFactory {
 		switch (exporters) {
 		case LOGGER: return new LoggerExporter(model);
 		case ANALYSIS_LOGGER: return new AnalysisLoggerExporter(model);
-		case MD: return new MarkdownExporter(model);
-		case PDF:
-			return null;
+		default:
+			throw new WebApiRuntimeException("Unexpected value: Exporters > " + exporters);
+		}		
+	}
+
+	public static Exporter export(ExporterType exporters, ApiModel model, File temporaryDir) {
+		switch (exporters) {
+		case LOGGER: return new LoggerExporter(model);
+		case ANALYSIS_LOGGER: return new AnalysisLoggerExporter(model);
+		case MD: return new SimplePandocExporter(exporters, model, temporaryDir);
+		case PDF: return new SimplePandocExporter(exporters, model, temporaryDir);
 		default:
 			throw new WebApiRuntimeException("Unexpected value: Exporters > " + exporters);
 		}		
@@ -23,13 +31,24 @@ public class ExporterFactory {
 		switch (exporters) {
 		case LOGGER: return new LoggerExporter(model);
 		case ANALYSIS_LOGGER: return new AnalysisLoggerExporter(model);
-		case MD: return new MarkdownExporter(model);
+		case MD: return new SimplePandocExporter(exporters, model, temporaryDir, file);
+		case PDF: return new SimplePandocExporter(exporters, model, temporaryDir, file);
 		case MSWORD: return new MsWordExporter(model, temporaryDir, file);
-		case PDF:
-			return null;
 		default:
 			throw new WebApiRuntimeException("Unexpected value: Exporters > " + exporters);
 		}		
 	}
 
+	public static Exporter export(ExporterType exporters, ApiModel model, File temporaryDir, File file, File wordTemplate) {
+		switch (exporters) {
+		case LOGGER: return new LoggerExporter(model);
+		case ANALYSIS_LOGGER: return new AnalysisLoggerExporter(model);
+		case MD: return new SimplePandocExporter(exporters, model, temporaryDir, file);
+		case PDF: return new SimplePandocExporter(exporters, model, temporaryDir, file);
+		case MSWORD: return new MsWordExporter(model, temporaryDir, file, wordTemplate);
+		default:
+			throw new WebApiRuntimeException("Unexpected value: Exporters > " + exporters);
+		}		
+	}
+	
 }

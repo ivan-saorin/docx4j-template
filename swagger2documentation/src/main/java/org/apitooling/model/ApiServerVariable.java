@@ -16,8 +16,8 @@ public class ApiServerVariable extends ApiElement {
 	private String description;
 	private ArrayList<String> enumValue = new ArrayList<String>(); 
 	
-	public ApiServerVariable(int index, ApiType modelVersion, OpenAPI model, String key, ServerVariable serverVariable) {
-		super();
+	public ApiServerVariable(ApiModel parent, int index, ApiType modelVersion, OpenAPI model, String key, ServerVariable serverVariable) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, serverVariable.getClass().getName(), serverVariable.getExtensions());
 		describeModel(index, modelVersion, model, key, serverVariable);
 	}

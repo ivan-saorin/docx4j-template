@@ -10,14 +10,14 @@ public class ApiLicense extends ApiElement {
 	private String name;
 	private String url;
 	
-	public ApiLicense(io.swagger.v3.oas.models.info.License license) {
-		super();
+	public ApiLicense(ApiModel parent, io.swagger.v3.oas.models.info.License license) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", "Open Api 3.x", license.getClass().getName(), license.getExtensions());
 		describeModel(license);
 	}
 
-	public ApiLicense(v2.io.swagger.models.License license) {
-		super();
+	public ApiLicense(ApiModel parent, v2.io.swagger.models.License license) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", "Swagger 2.x", license.getClass().getName(), license.getVendorExtensions());
 		describeModel(license);
 	}

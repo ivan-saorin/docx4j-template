@@ -8,7 +8,7 @@ public class Globals {
 	
 	public static final String PROJECT_BASEDIR_FILE = "swagger2documentation.project.basedir";
 
-	private static Map<String, Object> map = new HashMap<>();
+	private static Map<String, Object> map = new HashMap<String, Object>();
 	
 	protected Globals() {
 		super();

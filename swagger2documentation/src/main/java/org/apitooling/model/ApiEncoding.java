@@ -10,8 +10,8 @@ public class ApiEncoding extends ApiElement {
 	private static Logger logger = LoggerFactory.getLogger(ApiEncoding.class);
 	private String encoding;
 	
-	public ApiEncoding(ApiType modelVersion, Encoding encoding) {
-		super();
+	public ApiEncoding(ApiModel parent, ApiType modelVersion, Encoding encoding) {
+		super(parent);
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, encoding.getClass().getName(), encoding.getExtensions());
 		describeModel(modelVersion, encoding);
 	}
@@ -21,8 +21,8 @@ public class ApiEncoding extends ApiElement {
 		this.encoding = encoding.getContentType();
 	}
 
-	public ApiEncoding(ApiType modelVersion, String encoding) {
-		super();
+	public ApiEncoding(ApiModel parent, ApiType modelVersion, String encoding) {
+		super(parent);
 		describeModel(modelVersion, encoding);
 	}
 	
