@@ -1,9 +1,22 @@
 <#list xImpl>
 	<note><title>Changes:</title>
-	<#items as k, v>
+	<#assign odescription=0>
+	<#assign ocondition=0>
+	<#assign condition=0>
+	<#assign cdate=0>
+	<#assign cstatus=0>
+	<#assign fieldName=0>
+	<#assign description=0>
+	<#assign oldDescription=0>
+	<#assign date=0>
+	<#assign status=0>	
+	<#items as k, v>	
 		<#if k=="condition">
 			<#list v as k1, v1>
-				<#if k1=="condition">
+				<#if k1=="description">
+					<#assign odescription=v1>
+				</#if>			
+				<#if k1=="original">
 					<#assign ocondition=v1>
 				</#if>
 				<#if k1=="current">
@@ -30,11 +43,12 @@
 			<#assign status=v>
 		</#if>				
 	</#items>
-	<para>	
-		<#if ocondition?? && condition??><para>Originally <emphasis>${ocondition}</emphasis> it was changed to <emphasis role="strong">${condition}</emphasis></para><para> <#if cstatus?? && cdate??><#if cstatus??><para>Status: <emphasis role="strong">${cstatus}</emphasis></#if> <#if cdate??>changed on ${cdate?date}</#if></#if></para> </#if>
-		<#if description??><para>${md2docbook(description)}</para></#if>
-		<#if oldDescription??><para><emphasis role="strong">Old description was:</emphasis></para><para>${md2docbook(oldDescription)}</para></#if>
-		<#if status??><para>Status: <emphasis role="strong">${status}</emphasis> <#if date??>changed on ${date?date}</#if></para></#if>
+	<para>
+	    <#if odescription?? && odescription?is_string><para>${md2docbook(odescription)}</para></#if>
+		<#if ocondition??  && ocondition?is_string && condition??  && condition?is_string><para>Originally <emphasis>${ocondition}</emphasis> it was changed to <emphasis role="strong">${condition}</emphasis></para><para> <#if cstatus?? && cdate??><#if cstatus??><para>Status: <emphasis role="strong">${cstatus}</emphasis></#if> <#if cdate?? && cdate?is_date>changed on ${cdate?date}</#if></#if></para> </#if>
+		<#if description?? && description?is_string><para>${md2docbook(description)}</para></#if>
+		<#if oldDescription?? && oldDescription?is_string><para><emphasis role="strong">Old description was:</emphasis></para><para>${md2docbook(oldDescription)}</para></#if>
+		<#if status?? && status?is_string><para>Status: <emphasis role="strong">${status}</emphasis> <#if date?? && date?is_date>changed on ${date?date}</#if></para></#if>
 	</para>
 	</note>
 </#list>

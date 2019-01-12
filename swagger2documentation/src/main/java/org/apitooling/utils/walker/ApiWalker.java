@@ -12,6 +12,7 @@ import org.apitooling.model.ApiToolingParser;
 import org.apitooling.support.Globals;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 public class ApiWalker extends DirectoryWalker {
 
@@ -54,10 +55,12 @@ public class ApiWalker extends DirectoryWalker {
 
 	@Override
 	public void process(File file) throws WebApiException {
-		System.err.printf("SWAGGER WALKER PROCESS %s %n", file);
+		if (logger.isWarnEnabled()) logger.warn("SWAGGER WALKER EVALUATING FILE: {}", file.getName());
 		if (file.getName().endsWith(".yaml") || file.getName().endsWith(".json") && file.length() > 0) {
 			try {
-				logger.info("processing swagger: " + file.getName() + " [" + file.getAbsolutePath() + "]");
+				MDC.put("logFileName", file.getName());
+				if (logger.isWarnEnabled()) logger.warn("SWAGGER WALKER PROCESSING FILE: {}", file.getName());
+				//logger.info("processing swagger: " + file.getName() + " [" + file.getAbsolutePath() + "]");
 				
 				ApiModel model = ApiToolingParser.load(file);
 				
@@ -80,6 +83,8 @@ public class ApiWalker extends DirectoryWalker {
 				*/
 			} catch (Throwable cause) {
 				throw new WebApiException(cause);
+			} finally {
+				MDC.remove("logFileName");
 			}
 		}
 		

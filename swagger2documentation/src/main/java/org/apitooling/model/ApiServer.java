@@ -1,6 +1,6 @@
 package org.apitooling.model;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -16,7 +16,7 @@ public class ApiServer extends ApiElement {
 	
 	private String description;
 	private String url;
-	private LinkedHashMap<String, ApiServerVariable> variables = new LinkedHashMap<String, ApiServerVariable>();
+	private HashMap<String, ApiServerVariable> variables = new HashMap<String, ApiServerVariable>();
 	
 	public ApiServer(ApiType modelVersion, OpenAPI model, Server server) {
 		super();
@@ -64,7 +64,7 @@ public class ApiServer extends ApiElement {
 		return url;
 	}
 
-	public LinkedHashMap<String, ApiServerVariable> getVariables() {
+	public HashMap<String, ApiServerVariable> getVariables() {
 		return variables;
 	}
 	

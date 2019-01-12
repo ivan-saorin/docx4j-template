@@ -1,6 +1,6 @@
 package org.apitooling.model;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,14 +21,14 @@ public class ApiComponents extends ApiElement {
 
 	private static Logger logger = LoggerFactory.getLogger(ApiComponents.class);
 	
-	private LinkedHashMap<String, ApiSchema> simpleTypes = new LinkedHashMap<String, ApiSchema>();
-	private LinkedHashMap<String, ApiSchema> schemas = new LinkedHashMap<String, ApiSchema>();
-	private LinkedHashMap<String, ApiResponse> responses = new LinkedHashMap<String, ApiResponse>();
-	private LinkedHashMap<String, ApiParameter> parameters = new LinkedHashMap<String, ApiParameter>();
-	private LinkedHashMap<String, ApiExample> examples = new LinkedHashMap<String, ApiExample>();
-	private LinkedHashMap<String, ApiRequestBody> requestBodies = new LinkedHashMap<String, ApiRequestBody>();
+	private HashMap<String, ApiSchema> simpleTypes = new HashMap<String, ApiSchema>();
+	private HashMap<String, ApiSchema> schemas = new HashMap<String, ApiSchema>();
+	private HashMap<String, ApiResponse> responses = new HashMap<String, ApiResponse>();
+	private HashMap<String, ApiParameter> parameters = new HashMap<String, ApiParameter>();
+	private HashMap<String, ApiExample> examples = new HashMap<String, ApiExample>();
+	private HashMap<String, ApiRequestBody> requestBodies = new HashMap<String, ApiRequestBody>();
 	// private Map<String, SecurityScheme> securitySchemes = null;
-	private LinkedHashMap<String, ApiLink> links = new LinkedHashMap<String, ApiLink>();
+	private HashMap<String, ApiLink> links = new HashMap<String, ApiLink>();
 	// private Map<String, APiCallback> callbacks = null;
 
 	public ApiComponents(ApiType modelVersion, OpenAPI model, Components components) {
@@ -44,7 +44,7 @@ public class ApiComponents extends ApiElement {
 			int i = 0;
 			for (String key : keys) {
 				Schema s = components.getSchemas().get(key);
-				LinkedHashMap<String, ApiSchema> map = isSimpleType(s) ? this.simpleTypes : this.schemas;
+				HashMap<String, ApiSchema> map = isSimpleType(s) ? this.simpleTypes : this.schemas;
 				map.put(key, new ApiSchema(i++, modelVersion, model, this, key, s));
 			}
 		}
@@ -122,7 +122,7 @@ public class ApiComponents extends ApiElement {
 			int i = 0;
 			for (String key : keys) {
 				Model m = definitions.get(key);
-				LinkedHashMap<String, ApiSchema> map = isSimpleType(m) ? this.simpleTypes : this.schemas;
+				HashMap<String, ApiSchema> map = isSimpleType(m) ? this.simpleTypes : this.schemas;
 				map.put(key, new ApiSchema(i++, modelVersion, model, this, key, m));
 			}
 		}

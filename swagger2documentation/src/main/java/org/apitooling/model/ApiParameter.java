@@ -1,7 +1,7 @@
 package org.apitooling.model;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -9,7 +9,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.swagger.models.apideclaration.Model;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.headers.Header;
 import io.swagger.v3.oas.models.parameters.Parameter;
@@ -33,7 +32,7 @@ public class ApiParameter extends ApiElement {
 	private ArrayList<String> enumValues;
 	private ApiContent content; 
 	private String example;
-	private LinkedHashMap<String, ApiExample> examples = new LinkedHashMap<String, ApiExample>();	
+	private HashMap<String, ApiExample> examples = new HashMap<String, ApiExample>();	
 	private boolean required = false;
 	private boolean readOnly = false;
 	private boolean allowEmptyValues = false;
@@ -307,7 +306,7 @@ public class ApiParameter extends ApiElement {
 		return example;
 	}
 
-	public LinkedHashMap<String, ApiExample> getExamples() {
+	public HashMap<String, ApiExample> getExamples() {
 		return examples;
 	}
 

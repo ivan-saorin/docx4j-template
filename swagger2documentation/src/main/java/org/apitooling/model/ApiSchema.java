@@ -1,7 +1,7 @@
 package org.apitooling.model;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -31,7 +31,7 @@ public class ApiSchema extends ApiElement {
 	private String name;
 	private String description;
 	private ArrayList<String> requireds = new ArrayList<String>();
-	private LinkedHashMap<String, ApiField> properties = new LinkedHashMap<String, ApiField>();
+	private HashMap<String, ApiField> properties = new HashMap<String, ApiField>();
 	
 	public ApiSchema(int index, ApiType modelVersion, OpenAPI model, ApiComponents parent, String key, Schema<?> schema) {
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, schema.getClass().getName(), schema.getExtensions());
@@ -162,9 +162,6 @@ public class ApiSchema extends ApiElement {
 			if (properties == null) {
 				this.properties.put(key, new ApiField(modelVersion, model, key, (ModelImpl) schema));
 			}
-			//else {			
-			//	if (logger.isInfoEnabled()) logger.info("to be merged {} > {}", key, properties);
-			//}
 		}
 		
 		if (properties != null) {
@@ -226,7 +223,7 @@ public class ApiSchema extends ApiElement {
 		return name;
 	}
 
-	public LinkedHashMap<String, ApiField> getProperties() {
+	public HashMap<String, ApiField> getProperties() {
 		return properties;
 	}
 	

@@ -213,7 +213,7 @@ public class ApiField extends ApiElement {
 		ArrayList<String> requireds = new ArrayList<String>();
 		if (schema.getRequired() != null) {
 			requireds.addAll(schema.getRequired());
-		}
+		}		
 		this.describeExtensions(schema.getExtensions());
 		this.required = requireds.contains(name);		
 		this.array = false;
@@ -319,9 +319,8 @@ public class ApiField extends ApiElement {
 		}
 		else {
 			this.name = key;
-		}
-		
-		this.describeExtensions(p.getVendorExtensions());
+		}		
+		this.describeExtensions(this.name, p.getVendorExtensions());
 		
 		this.required = required;
 		
@@ -368,7 +367,7 @@ public class ApiField extends ApiElement {
 			this.format = p.getFormat();
 		}
 		if (p.getDescription() != null) {
-			this.description = p.getDescription();
+			this.description = p.getDescription();			
 		}
 		if (p.getExample() != null) {
 			this.example = p.getExample().toString();

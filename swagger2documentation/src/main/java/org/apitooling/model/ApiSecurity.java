@@ -1,6 +1,6 @@
 package org.apitooling.model;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 
-public class ApiSecurity extends LinkedHashMap<String, List<String>> {
+public class ApiSecurity extends HashMap<String, List<String>> {
 
 	private static Logger logger = LoggerFactory.getLogger(ApiSecurity.class);
 	

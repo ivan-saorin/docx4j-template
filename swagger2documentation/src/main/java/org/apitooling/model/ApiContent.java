@@ -1,6 +1,6 @@
 package org.apitooling.model;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,13 +14,13 @@ import v2.io.swagger.models.Model;
 import v2.io.swagger.models.RefModel;
 import v2.io.swagger.models.Swagger;
 
-public class ApiContent extends LinkedHashMap<String, ApiMediaType> {
+public class ApiContent extends HashMap<String, ApiMediaType> {
 
 	private static final long serialVersionUID = 8241536101151816366L;
 	private static Logger logger = LoggerFactory.getLogger(ApiContent.class);
 	
 	private static final String XIMPLEMENTATION_KEY = "x-implementation";	
-	protected LinkedHashMap<String, Object> xImplementation = new LinkedHashMap<String, Object>();  
+	protected HashMap<String, Object> xImplementation = new HashMap<String, Object>();  
 
 	public ApiContent(ApiType modelVersion, OpenAPI model, String name, Content content) {
 		super();

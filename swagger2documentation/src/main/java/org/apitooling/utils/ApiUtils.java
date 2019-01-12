@@ -1,7 +1,7 @@
 package org.apitooling.utils;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apitooling.model.ApiPath;
@@ -9,7 +9,7 @@ import org.apitooling.model.ApiPath;
 public class ApiUtils {
 
 	public static Map<String, ArrayList<ApiPath>> groupByApi(ArrayList<ApiPath> paths) {
-		LinkedHashMap<String, ArrayList<ApiPath>> res = new LinkedHashMap<String, ArrayList<ApiPath>>();
+		HashMap<String, ArrayList<ApiPath>> res = new HashMap<String, ArrayList<ApiPath>>();
 		for (ApiPath path : paths) {
 			String basePath = calculateBasePath(path);
 			if (res.containsKey(basePath)) {

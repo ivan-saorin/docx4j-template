@@ -69,7 +69,34 @@ public class AnalysisLoggerExporter implements Exporter {
 				sb.append(TAB).append(TAB).append(key2).append(LF);
 				ArrayList<ApiParameter> params = pathParams.get(key2);
 				for (ApiParameter param : params) {
-					ApiParameter global = globals.get(param.getName());					
+					ApiParameter global = globals.get(param.getName());
+					
+					if (param.getxImplementation() != null) {						
+						Map<String, Object> xImplementation = param.getxImplementation();
+						if (xImplementation.containsKey("condition")) {
+							sb.append(TAB).append(TAB).append(TAB);
+							Map<String, Object> condition = (Map<String, Object>) xImplementation.get("condition");
+							Object ocondition = condition.get("original"); 
+							Object current = condition.get("current");
+							//Object date = condition.get("date");
+							//((Object status = condition.get("status");
+							StringBuilder builder = new StringBuilder();
+							builder.append((ocondition != null) ? ocondition : "(undefined)");
+							builder.append(" > ");
+							builder.append((current != null) ? current : "(undefined)");
+							builder.append(LF);
+							sb.append(builder);
+						}
+					}
+					
+					if (param.getDescription() != null) {
+						boolean hasTBC = param.getDescription().indexOf("[TBC") > -1;
+						if (hasTBC) {
+							sb.append(TAB).append(TAB).append(TAB).append("has TBC").append(LF);
+						}
+					}
+					
+					sb.append(TAB).append(TAB).append(TAB).append((param.isRequired()) ? "required: true" : "required: false").append(LF);
 					sb.append(TAB).append(TAB).append(TAB);
 					if ((global != null) && (param.equals(global))) {
 						sb.append("=");
@@ -77,11 +104,9 @@ public class AnalysisLoggerExporter implements Exporter {
 					if (param.getDataType().isReference() || param.getDataType().isItemsReference()) {
 						sb.append(">");
 					}
-					if (param.isRequired()) {
-						sb.append("*");
-					}
 					sb.append(param.getName()).append(":").append(param.getDataType()).append((global != null) ? "(global" : "").append(LF);
 					sb.append(TAB).append(TAB).append(TAB).append(param.getDescription()).append(LF);
+									
 				}				
 			}			
 		}
