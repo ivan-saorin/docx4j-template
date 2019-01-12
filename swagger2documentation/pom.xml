@@ -35,10 +35,6 @@
 		<slf4j.version>1.7.25</slf4j.version>
 		<openapi-parser.version>4.0.3</openapi-parser.version>
 		<markedj.version>1.0.15</markedj.version>
-		<!-- markup-document-builder.version>1.1.1</markup-document-builder.version -->
-		<markdowngenerator.version>1.3.1.1</markdowngenerator.version>
-		<!-- asciidoctorj.version>v1.6.0-RC.2</asciidoctorj.version -->
-		<!-- asciidoctorj.pdf.version>1.5.0-alpha.16</asciidoctorj.pdf.version -->
 		<!-- json-schema-validator.version>2.2.6</json-schema-validator.version -->
 		<swagger-parser.version>2.0.0-rc1</swagger-parser.version>
 		<swagger-parser-v3.version>2.0.7</swagger-parser-v3.version>
@@ -75,13 +71,7 @@
 		</dependency>
 
 
-		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
-		<!-- dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency-->
-
+		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api already imported by logback-classic-->
 		<dependency>
 		  <groupId>ch.qos.logback</groupId>
 		  <artifactId>logback-classic</artifactId>
@@ -94,12 +84,6 @@
 			<artifactId>markedj</artifactId>
 			<version>${markedj.version}</version>
 		</dependency>
-
-		<!-- dependency>
-			<groupId>io.github.swagger2markup</groupId>
-			<artifactId>markup-document-builder</artifactId>
-			<version>${markup-document-builder.version}</version>
-		</dependency -->
 
 		<!-- https://mvnrepository.com/artifact/io.swagger/swagger-parser -->
 		<dependency>
@@ -115,34 +99,12 @@
 		    <version>${swagger-parser-v3.version}</version>
 		</dependency>
 
-		<!-- dependency>
-			<groupId>org.asciidoctor</groupId>
-			<artifactId>asciidoctorj</artifactId>
-			<version>${asciidoctorj.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.asciidoctor</groupId>
-			<artifactId>asciidoctorj-pdf</artifactId>
-			<version>${asciidoctorj.pdf.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.github.fge</groupId>
-			<artifactId>json-schema-validator</artifactId>
-			<version>${json-schema-validator.version}</version>
-		</dependency -->
-		<!-- https://mvnrepository.com/artifact/net.steppschuh.markdowngenerator/markdowngenerator -->
-		<dependency>
-		    <groupId>net.steppschuh.markdowngenerator</groupId>
-		    <artifactId>markdowngenerator</artifactId>
-		    <version>${markdowngenerator.version}</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.freemarker/freemarker -->
 		<dependency>
 		    <groupId>org.freemarker</groupId>
 		    <artifactId>freemarker</artifactId>
 		    <version>${freemarker.version}</version>
 		</dependency>
-		
 		
 		<!-- https://bitbucket.org/leito/universal-document-converter -->
 		<!-- https://mvnrepository.com/artifact/org.bitbucket.leito/universal-document-converter -->
