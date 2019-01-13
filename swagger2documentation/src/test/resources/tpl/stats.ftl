@@ -29,17 +29,5 @@
 	<row>	  
 	  <entry><type>Total Patch Operations</type></entry><entry><type>${model.stats.httpPatchOperations}</type></entry>
 	</row>
-	<row>	  
-	  <entry><type>Avg Path Parameters per Opertion</type></entry><entry><type>${model.stats.avgPathParamsPerOperation?string["0.00"]}</type></entry>
-	</row>
-	<row>
-	  <entry><type>Avg Req Header Parameters per Opertion</type></entry><entry><type>${model.stats.avgHeaderAttrsPerOperation?string["0.00"]}</type></entry>
-	</row>
-	<row>
-	  <entry><type>Avg Query Parameters per Opertion</type></entry><entry><type>${model.stats.avgQueryParamsPerOperation?string["0.00"]}</type></entry>
-	</row>
-	<row>
-	  <entry><type>Avg Examples per Opertion</type></entry><entry><type>${model.stats.avgExamplesPerOperation?string["0.00"]}</type></entry>
-	</row>
 	</tbody>
 </table>			
