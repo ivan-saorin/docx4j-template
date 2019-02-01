@@ -12,6 +12,7 @@ public class ApiExample extends ApiElement {
 	
     private String summary = null;
     private String description = null;
+    private String note = null;
     private String value = null;
 
 	public ApiExample(ApiModel parent, ApiType modelVersion, OpenAPI model, String key, Example example) {
@@ -19,7 +20,18 @@ public class ApiExample extends ApiElement {
 		//if (logger.isInfoEnabled()) logger.info("{} > {} estensions: {}", modelVersion, example.getClass().getName(), example.getExtensions());
 		defineModel(modelVersion, model, key, example);
 	}
+
 	
+	public ApiExample(ApiModel parent, String summary, String description, String note, String value) {
+		super(parent);
+		this.summary = summary;
+		this.description = description;
+		this.note = note;
+		this.value = value;
+		this.getStats().incExamples();
+	}
+
+
 	private void defineModel(ApiType modelVersion, OpenAPI model, String key, Example example) {
 		if (example.getSummary() != null) {
 			this.summary = example.getSummary();
@@ -43,6 +55,10 @@ public class ApiExample extends ApiElement {
 
 	public String getDescription() {
 		return description;
+	}
+	
+	public String getNote() {
+		return note;
 	}
 
 	public String getValue() {

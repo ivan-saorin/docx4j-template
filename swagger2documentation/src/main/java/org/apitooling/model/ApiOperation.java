@@ -2,6 +2,7 @@ package org.apitooling.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -26,7 +27,7 @@ public class ApiOperation extends ApiElement {
 	private String description;
 	private boolean deprecated = false;	
 	private ApiRequestBody requestBody;
-	private HashMap<String, ApiResponse> responses = new HashMap<String, ApiResponse>();
+	private HashMap<String, ApiResponse> responses = new LinkedHashMap<String, ApiResponse>();
 	private ApiExternalDocs externalDocs;
 	private ArrayList<String> consumes = new ArrayList<String>();
 	private ArrayList<String> produces = new ArrayList<String>();

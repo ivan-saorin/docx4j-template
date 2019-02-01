@@ -1,6 +1,7 @@
 package org.apitooling.model;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,14 +22,14 @@ public class ApiComponents extends ApiElement {
 
 	private static Logger logger = LoggerFactory.getLogger(ApiComponents.class);
 	
-	private HashMap<String, ApiSchema> simpleTypes = new HashMap<String, ApiSchema>();
-	private HashMap<String, ApiSchema> schemas = new HashMap<String, ApiSchema>();
-	private HashMap<String, ApiResponse> responses = new HashMap<String, ApiResponse>();
-	private HashMap<String, ApiParameter> parameters = new HashMap<String, ApiParameter>();
-	private HashMap<String, ApiExample> examples = new HashMap<String, ApiExample>();
-	private HashMap<String, ApiRequestBody> requestBodies = new HashMap<String, ApiRequestBody>();
+	private HashMap<String, ApiSchema> simpleTypes = new LinkedHashMap<String, ApiSchema>();
+	private HashMap<String, ApiSchema> schemas = new LinkedHashMap<String, ApiSchema>();
+	private HashMap<String, ApiResponse> responses = new LinkedHashMap<String, ApiResponse>();
+	private HashMap<String, ApiParameter> parameters = new LinkedHashMap<String, ApiParameter>();
+	private HashMap<String, ApiExample> examples = new LinkedHashMap<String, ApiExample>();
+	private HashMap<String, ApiRequestBody> requestBodies = new LinkedHashMap<String, ApiRequestBody>();
 	// private Map<String, SecurityScheme> securitySchemes = null;
-	private HashMap<String, ApiLink> links = new HashMap<String, ApiLink>();
+	private HashMap<String, ApiLink> links = new LinkedHashMap<String, ApiLink>();
 	// private Map<String, APiCallback> callbacks = null;
 
 	public ApiComponents(ApiModel parent, ApiType modelVersion, OpenAPI model, Components components) {

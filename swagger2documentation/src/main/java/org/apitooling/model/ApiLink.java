@@ -2,6 +2,7 @@ package org.apitooling.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -19,7 +20,7 @@ public class ApiLink extends ApiElement {
 	private ArrayList<ApiParameter> headerAttributes = new ArrayList<ApiParameter>();
 	private String operationId;
 	private String operationRef;
-	private HashMap<String, String> parameters = new HashMap<String, String>();
+	private HashMap<String, String> parameters = new LinkedHashMap<String, String>();
 	private Object requestBody;
 	private ApiServer server;
 	

@@ -2,6 +2,7 @@ package org.apitooling.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -21,7 +22,7 @@ public class ApiResponse extends ApiElement {
 	private String description;
 	private ApiContent content;
 	private ArrayList<String> produces = null;
-	private HashMap<String, String> examples = new HashMap<String, String>(); 
+	private HashMap<String, String> examples = new LinkedHashMap<String, String>(); 
 	private ArrayList<ApiParameter> headerAttributes = new ArrayList<ApiParameter>();
 	private ArrayList<ApiLink> links = new ArrayList<ApiLink>();
 	private ApiSchema schema;

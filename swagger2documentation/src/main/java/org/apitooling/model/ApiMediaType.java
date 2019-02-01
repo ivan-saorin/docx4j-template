@@ -1,6 +1,7 @@
 package org.apitooling.model;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -15,9 +16,9 @@ public class ApiMediaType extends ApiElement {
 
 	private static Logger logger = LoggerFactory.getLogger(ApiMediaType.class);
 	
-	private HashMap<String, ApiEncoding> encoding = new HashMap<String, ApiEncoding>();
+	private HashMap<String, ApiEncoding> encoding = new LinkedHashMap<String, ApiEncoding>();
 	private String example;
-	private HashMap<String, ApiExample> examples = new HashMap<String, ApiExample>();
+	private HashMap<String, ApiExample> examples = new LinkedHashMap<String, ApiExample>();
 	private ApiField schema;
 	
 	public ApiMediaType(ApiModel parent, ApiType modelVersion, OpenAPI model, MediaType mediaType) {

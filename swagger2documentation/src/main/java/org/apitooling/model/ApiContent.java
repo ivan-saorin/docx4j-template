@@ -1,6 +1,7 @@
 package org.apitooling.model;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,7 +21,7 @@ public class ApiContent extends HashMap<String, ApiMediaType> {
 	private static Logger logger = LoggerFactory.getLogger(ApiContent.class);
 	
 	private static final String XIMPLEMENTATION_KEY = "x-implementation";	
-	protected HashMap<String, Object> xImplementation = new HashMap<String, Object>();  
+	protected HashMap<String, Object> xImplementation = new LinkedHashMap<String, Object>();  
 
 	private ApiModel parent;
 	

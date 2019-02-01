@@ -10,4 +10,8 @@
 	</programlisting>
 	</para>
 </#if>
-<#include "./examples.ftl">
+<#if item.xExamples??>
+	<#include "./xExamples.ftl">
+<#else>
+	<#include "./examples.ftl">
+</#if>

@@ -3,6 +3,7 @@ package org.apitooling.model;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -35,7 +36,7 @@ public class ApiField extends ApiElement {
 	private String description;
 	private ArrayList<String> enumValues = new ArrayList<String>();
 	private String example;
-	private HashMap<String, Example> examples = new HashMap<String, Example>(); 
+	private HashMap<String, Example> examples = new LinkedHashMap<String, Example>(); 
 	private int minLength = -1;
 	private int maxLength = -1;
 	private int minItems = -1;

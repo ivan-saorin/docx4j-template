@@ -2,6 +2,7 @@ package org.apitooling.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,7 +33,7 @@ public class ApiParameter extends ApiElement {
 	private ArrayList<String> enumValues;
 	private ApiContent content; 
 	private String example;
-	private HashMap<String, ApiExample> examples = new HashMap<String, ApiExample>();	
+	private HashMap<String, ApiExample> examples = new LinkedHashMap<String, ApiExample>();	
 	private boolean required = false;
 	private boolean readOnly = false;
 	private boolean allowEmptyValues = false;

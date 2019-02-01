@@ -2,6 +2,7 @@ package org.apitooling.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -31,7 +32,7 @@ public class ApiSchema extends ApiElement {
 	private String name;
 	private String description;
 	private ArrayList<String> requireds = new ArrayList<String>();
-	private HashMap<String, ApiField> properties = new HashMap<String, ApiField>();
+	private HashMap<String, ApiField> properties = new LinkedHashMap<String, ApiField>();
 	
 	public ApiSchema(ApiModel parentModel, int index, ApiType modelVersion, OpenAPI model, ApiComponents parent, String key, Schema<?> schema) {
 		super(parentModel);
