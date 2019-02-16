@@ -2,11 +2,11 @@ package org.apitooling.model;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import org.apitooling.model.stats.Stats;
 import org.slf4j.Logger;
@@ -22,7 +22,12 @@ public abstract class ApiElement {
 	protected HashMap<String, Object> xImplementation = new HashMap<String, Object>();  
 	
 	private static final String XEXAMPLES_KEY = "x-examples";
-	protected HashMap<String, Object> xExamples = new HashMap<String, Object>();
+	//protected HashMap<String, Object> xExamples = new HashMap<String, Object>();
+	protected List<Object> xExamples = new ArrayList<Object>();
+	
+	private static final String XHOSTS_KEY = "x-hosts";
+	protected List<Object> xHosts = new ArrayList<Object>();
+	
 	
 	protected ApiModel model;
 	
@@ -40,7 +45,6 @@ public abstract class ApiElement {
 		return typeName;			
 	}
 	
-	@SuppressWarnings("unchecked")
 	protected void describeExtensions(Map<String, Object> extensions) {
 		this.describeExtensions(null, extensions);
 	}
@@ -52,8 +56,10 @@ public abstract class ApiElement {
 		
 		describeXImplementation(name, extensions);
 		describeXExamples(name, extensions);
+		describeXHosts(name, extensions);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void describeXImplementation(String name, Map<String, Object> extensions) {
 		if (extensions.containsKey(XIMPLEMENTATION_KEY)) {
 			Map<String, Object> extension = (Map<String, Object>) extensions.get(XIMPLEMENTATION_KEY);
@@ -100,89 +106,29 @@ public abstract class ApiElement {
 		if (extensions.containsKey(XEXAMPLES_KEY)) {
 			if (xExamples.size() == 0) {
 				List<Object> myExamples = (List<Object>) extensions.get(XEXAMPLES_KEY);
-				//if (logger.isInfoEnabled()) logger.info("myexamples: {} -> {}", this.hashCode(), myExamples);
-				xExamples = new HashMap<String, Object>();
-				for (Object obj : myExamples) {
-					Map<String, Object> map = (Map<String, Object>) obj;
-					Set<String> keys = map.keySet();					
-					for (String key : keys) {
-						List<Object>tmp = (List<Object>) map.get(key);						
-						String key2 = null;
-						int i = 0;
-						xExamples.put(key, parseList(tmp));
-					}					
-				}
-				
-				if (logger.isInfoEnabled()) logger.info("examples: {} -> {}", this.hashCode(), xExamples);
+				xExamples.addAll(myExamples);				
+				//if (logger.isInfoEnabled()) logger.info("examples: {} -> {}", this.hashCode(), xExamples);
 			}			
 		}
-	}
-	
-	private Map<String, Object> parseList(List<Object> list) {
-		Map<String, Object> map = new HashMap<String, Object>();		
-		String key = null;
-		String summary = null;
-		String description = null;
-		String note = null;
-		String exampleCode = null;
-		int i = 0;
-		for (Object obj : list) {
-			if (i == 0) {
-				key = obj.toString();
-			}
-			else if (list.size() == 2) {
-				if (i == 1) {
-					exampleCode = obj.toString();
-				}
-			}			
-			else if (list.size() == 3) {
-				if (i == 1) {
-					description = obj.toString();
-				}				
-				if (i == 2) {
-					exampleCode = obj.toString();
-				}
-			}
-			else if (list.size() == 4) {
-				if (i == 1) {
-					description = obj.toString();
-				}
-				if (i == 2) {
-					note = obj.toString();
-				}				
-				if (i == 3) {
-					exampleCode = obj.toString();
-				}
-			}
-			else if (list.size() == 5) {
-				if (i == 1) {
-					summary = obj.toString();
-				}
-				if (i == 2) {
-					description = obj.toString();
-				}												
-				if (i == 3) {
-					note = obj.toString();
-				}								
-				if (i == 4) {
-					exampleCode = obj.toString();
-				}
-			}			
-			else {
-				exampleCode = obj.toString();
-			}
-			i++;
-		}
-		
-		ApiExample example = new ApiExample(this.model, summary, description, note, exampleCode);
-		
-		map.put(key, example);
-		
-		return map;
 	}
 
-	public Map<String, Object> getxExamples() {
+	@SuppressWarnings("unchecked")
+	private void describeXHosts(String name, Map<String, Object> extensions) {
+		if (extensions.containsKey(XHOSTS_KEY)) {
+			if (xHosts.size() == 0) {
+				List<Object> myHosts = (List<Object>) extensions.get(XHOSTS_KEY);
+				xHosts.addAll(myHosts);				
+				//if (logger.isInfoEnabled()) logger.info("examples: {} -> {}", this.hashCode(), xExamples);
+			}			
+		}
+	}
+
+	public List<Object> getxExamples() {
 		return xExamples;
+	}
+
+	public List<Object> getxHosts() {
+		return xHosts;
 	}
 
 	public ApiModel getModel() {

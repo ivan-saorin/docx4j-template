@@ -27,7 +27,10 @@ public class Markdown {
 		conversionTable.put("</strong>", "</emphasis>");
 		conversionTable.put("<em>", "<emphasis>");
 		conversionTable.put("</em>", "</emphasis>");
-		
+		/*
+		conversionTable.put("~~", "<emphasis role=\"strike\">");
+		conversionTable.put("~~", "</emphasis>");
+		*/
 		
 		options = new Options();
 		options.setSanitize(true);

@@ -1,0 +1,49 @@
+#Changes
+
+- consents_eidasOnly_1.3.yaml
+	parameters that was checked
+		- accountId
+		- consentId
+	open questions
+
+- account-information_eidasOnly_1.3.yaml
+	parameters that was checked
+		- consentId
+- payment-initiation_eidasOnly_1.3.yaml
+	parameters that was checked
+		- accountId
+		- consentId
+	open questions
+		POST /{payment-product} 
+		- name: Consent-ID
+		  in: header 
+		  type: string 
+		  description: This data element may be
+		    contained, if the payment initiation transaction is part of a
+			session, i.e. combined AIS/PIS service. This then contains the
+			"consentId" of the related AIS consent, which was performed
+			prior to this payment initiation. 
+		  required: false 
+		Is the description OK? Is the required false OK?
+			Owner: Scamoni
+		
+		GET /{payment-product}/{paymentId}
+        - name: Consent-ID
+          in: header
+          type: string
+          description: >-
+            This data element may be contained, if the payment initiation
+            transaction is part of a session, i.e. combined AIS/PIS service.
+            This then contains the "consentId" of the related AIS consent, which
+            was performed prior to this payment initiation.
+          required: false
+		Is the description OK? Is the required false OK?
+			Owner: Scamoni
+		
+
+
+      x-implementation: original-condition: Mandatory
+		condition: Ignored 
+		description: >- Ignored. **Warning** the field could be required by law as the means of the TPP to comunicate incidents to the ASPSP.
+		status: TBC 
+		date: 2019-01-08 

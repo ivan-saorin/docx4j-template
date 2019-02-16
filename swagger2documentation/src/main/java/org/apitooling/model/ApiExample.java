@@ -10,6 +10,7 @@ public class ApiExample extends ApiElement {
 
 	private static Logger logger = LoggerFactory.getLogger(ApiExample.class);
 	
+	private String mediaType = null;
     private String summary = null;
     private String description = null;
     private String note = null;
@@ -32,6 +33,17 @@ public class ApiExample extends ApiElement {
 	}
 
 
+	public ApiExample(ApiModel model, String mediaType, String summary, String description, String note, String exampleCode) {
+		super(model);
+		this.mediaType = mediaType;
+		this.summary = summary;
+		this.description = description;
+		this.note = note;
+		this.value = exampleCode;
+		this.getStats().incExamples();
+	}
+
+
 	private void defineModel(ApiType modelVersion, OpenAPI model, String key, Example example) {
 		if (example.getSummary() != null) {
 			this.summary = example.getSummary();
@@ -47,6 +59,10 @@ public class ApiExample extends ApiElement {
 			this.value = example.getExternalValue();
 		}
 		this.getStats().incExamples();
+	}
+
+	public String getMediaType() {
+		return mediaType;
 	}
 
 	public String getSummary() {
