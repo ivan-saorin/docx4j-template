@@ -34,6 +34,7 @@ public class ExporterFactory {
 		case MD: return new SimplePandocExporter(exporters, model, temporaryDir, file);
 		case PDF: return new SimplePandocExporter(exporters, model, temporaryDir, file);
 		case MSWORD: return new MsWordExporter(model, temporaryDir, file);
+		case MSEXCEL: return new MsExcelExporter(model, file);
 		default:
 			throw new WebApiRuntimeException("Unexpected value: Exporters > " + exporters);
 		}		
@@ -46,6 +47,7 @@ public class ExporterFactory {
 		case MD: return new SimplePandocExporter(exporters, model, temporaryDir, file);
 		case PDF: return new SimplePandocExporter(exporters, model, temporaryDir, file);
 		case MSWORD: return new MsWordExporter(model, temporaryDir, file, wordTemplate);
+		case MSEXCEL: return new MsExcelExporter(model, file);
 		default:
 			throw new WebApiRuntimeException("Unexpected value: Exporters > " + exporters);
 		}		
