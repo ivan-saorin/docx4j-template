@@ -22,13 +22,15 @@ public class ApiWalker extends DirectoryWalker {
 	private final File destinationDir;
 	private final File temporaryDir;
 	private final ExporterType[] exporters;
+	private final String[] extensions;
 	
-	public ApiWalker(File directory, String sourceDir, String destinationDir, String temporaryDir, ExporterType exporter) {
-		this(directory, sourceDir, destinationDir, temporaryDir, new ExporterType[] {exporter});
+	public ApiWalker(File directory, String sourceDir, String destinationDir, String temporaryDir, String[] extensions, ExporterType exporter) {
+		this(directory, sourceDir, destinationDir, temporaryDir, extensions, new ExporterType[] {exporter});
 	}
 	
-	public ApiWalker(File directory, String sourceDir, String destinationDir, String temporaryDir, ExporterType[] exporters) {
+	public ApiWalker(File directory, String sourceDir, String destinationDir, String temporaryDir, String[] extensions, ExporterType[] exporters) {
 		super(directory, false);
+		this.extensions = extensions;
 		this.exporters = exporters;
 		// dest
 		File d = new File(directory, destinationDir);
@@ -56,50 +58,62 @@ public class ApiWalker extends DirectoryWalker {
 	@Override
 	public void process(File file) throws WebApiException {
 		if (logger.isWarnEnabled()) logger.warn("SWAGGER WALKER EVALUATING FILE: {}", file.getName());
-		if (file.getName().endsWith(".yaml") || file.getName().endsWith(".json") && file.length() > 0) {
-			try {
-				MDC.put("logFileName", file.getName());
-				if (logger.isWarnEnabled()) logger.warn("SWAGGER WALKER PROCESSING FILE: {}", file.getName());
-				//logger.info("processing swagger: " + file.getName() + " [" + file.getAbsolutePath() + "]");
-				
-				ApiModel model = ApiToolingParser.load(file);
-				
-				//String name = changeExtension(file.getName(), ".xml");
-				for (ExporterType eType : exporters) {
-					Exporter exporter;
-					if (eType.equals(ExporterType.MSWORD)) {
-						File wordTemplate = new File(this.sourceDir, "Template.docx");
-						if (!wordTemplate.isDirectory() && wordTemplate.exists()) {
-							exporter = ExporterFactory.export(eType, model, this.temporaryDir, file, wordTemplate);
+		
+		if (file.length() > 0) {
+			boolean match = false;
+			for (String ext : extensions) {
+				match = file.getName().endsWith(ext);
+				if (match) break;
+			}
+			if (match) {
+				try {
+					MDC.put("logFileName", file.getName());
+					if (logger.isWarnEnabled()) logger.warn("SWAGGER WALKER PROCESSING FILE: {}", file.getName());
+					//logger.info("processing swagger: " + file.getName() + " [" + file.getAbsolutePath() + "]");
+					
+					ApiModel model = ApiToolingParser.load(file);
+					
+					//String name = changeExtension(file.getName(), ".xml");
+					for (ExporterType eType : exporters) {
+						Exporter exporter;
+						String extension = eType.getExtension();
+						String name = changeExtension(file.getName(), extension);
+						File output = new File(this.destinationDir, name);
+						
+						if (eType.equals(ExporterType.MSWORD)) {
+							File wordTemplate = new File(this.sourceDir, "Template.docx");
+							if (!wordTemplate.isDirectory() && wordTemplate.exists()) {
+								exporter = ExporterFactory.export(eType, model, this.temporaryDir, file, wordTemplate);
+							}
+							else {
+								exporter = ExporterFactory.export(eType, model, this.temporaryDir, file);
+							}
+						}
+						else if (eType.equals(ExporterType.MSEXCEL)) {
+							exporter = ExporterFactory.export(eType, model, this.temporaryDir, output);
 						}
 						else {
 							exporter = ExporterFactory.export(eType, model, this.temporaryDir, file);
 						}
+						ExporterOuptput out = exporter.getOuptput();
+						if (extension != null) {
+							out.toFile(output);
+						}
 					}
-					else {
-						exporter = ExporterFactory.export(eType, model, this.temporaryDir, file);
-					}
-					String extension = exporter.getStandardFileExtension();
-					ExporterOuptput out = exporter.getOuptput();
-					if (extension != null) {
-						String name = changeExtension(file.getName(), extension);
-						out.toFile(new File(this.destinationDir, name));
-					}
+					/*
+					FileUtils.writeStringToFile(
+							new File(new File(this.temporaryDir), file.getName()), 
+							exporter.getOuptput().asString(), 
+							"UTF-8", 
+							false *append*);
+					*/
+				} catch (Throwable cause) {
+					throw new WebApiException(cause);
+				} finally {
+					MDC.remove("logFileName");
 				}
-				/*
-				FileUtils.writeStringToFile(
-						new File(new File(this.temporaryDir), file.getName()), 
-						exporter.getOuptput().asString(), 
-						"UTF-8", 
-						false *append*);
-				*/
-			} catch (Throwable cause) {
-				throw new WebApiException(cause);
-			} finally {
-				MDC.remove("logFileName");
 			}
-		}
-		
+		}		
 	}
 
 	private String changeExtension(String name, String extWithDot) {

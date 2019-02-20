@@ -42,7 +42,7 @@ public class Swagger2DocumentattionTest {
 			throw new FileNotFoundException("The directory do not exist: " + BASE.getAbsolutePath());
 		}
 		logger.warn("Base set to: {}", BASE.getAbsolutePath());
-		new ApiWalker(BASE, "api", "output", "xml", ExporterType.MSWORD).walk();
+		new ApiWalker(BASE, "api", "output", "xml", new String[] {"[withNotes].yaml", "[withoutNotes].yaml", ".json"}, ExporterType.MSWORD).walk();
 		
 	}
 	

@@ -3,10 +3,6 @@ package org.apitooling.export.output;
 import java.io.File;
 import java.io.IOException;
 
-import jxl.Workbook;
-import jxl.write.Label;
-import jxl.write.Number;
-import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
 
