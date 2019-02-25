@@ -413,8 +413,7 @@ public class MsExcelExporter implements Exporter {
 	}
 
 	private int outputIntroduction(int index, ApiModel model, WritableSheet sheet) throws RowsExceededException, WriteException {		
-		index = insertSimple(index, "Title:", model.getTitle(), boldTitle, title, sheet);
-		index = insertSimple(index, "Model Version:", model.getVersion(), sheet);
+		index = insertSimple(index, "Title:", model.getTitle() + " " + model.getApiVersion(), boldTitle, title, sheet);
 		return index;
 	}
 
@@ -587,8 +586,9 @@ public class MsExcelExporter implements Exporter {
 	}
 	*/
 	
+	@SuppressWarnings("unchecked")
 	private int outputParamsList(int index, ArrayList<ApiParameter> params, WritableSheet sheet) throws RowsExceededException, WriteException {
-		insertMultiple(index, new String[] {"Name", "Required", "Deprecated", "DataType", "Enum", "Description", "Original BG", "Current UCG"}, true, sheet);
+		insertMultiple(index, new String[] {"Name", "Required", "Deprecated", "DataType", "Enum", "Description", "Original BG", "Current UCG", "Signature1", "Date1", "Status1", "Signature2", "Date2", "Status2", "Signature3", "Date3", "Status3"}, true, sheet);
 		index++;
 		for (ApiParameter p : params) {
 			String enumeration = "";
@@ -604,6 +604,18 @@ public class MsExcelExporter implements Exporter {
 			String description = (p.getDescription() != null) ? p.getDescription(): "";
 			String original = "";
 			String current = "";
+			String signature1 = "";
+			String date1 = "";
+			String status1 = "";
+			String signature2 = "";
+			String date2 = "";
+			String status2 = "";
+			String signature3 = "";
+			String date3 = "";
+			String status3 = "";
+			
+			boolean b1 = true;
+			boolean b2 = true;
 			
 			if (p.getxImplementation() != null) {
 				Object oCondition = p.getxImplementation().get("condition");
@@ -612,13 +624,35 @@ public class MsExcelExporter implements Exporter {
 						Map<String, Object> condition = (Map<String, Object>) oCondition;
 						Object oOriginal = condition.get("original");
 						Object oCurrent = condition.get("current");
+						Object oSignature1 = condition.get("signature");
+						Object oDate1 = condition.get("date");
+						Object oStatus1 = condition.get("status");
+						Object oSignature2 = condition.get("signature2");
+						Object oDate2 = condition.get("date2");
+						Object oStatus2 = condition.get("status2");
+						Object oSignature3 = condition.get("signature3");
+						Object oDate3 = condition.get("date3");
+						Object oStatus3 = condition.get("status3");
+
 						original = (oOriginal != null) ? oOriginal.toString() : "";
 						current = (oCurrent != null) ? oCurrent.toString() : "";
+						signature1 = (oSignature1 != null) ? oSignature1.toString() : "";
+						date1 = (oDate1 != null) ? oDate1.toString() : "";						
+						status1 = (oStatus1 != null) ? oStatus1.toString() : "";
+						signature2 = (oSignature2 != null) ? oSignature2.toString() : "";
+						date2 = (oDate2 != null) ? oDate2.toString() : "";						
+						status2 = (oStatus2 != null) ? oStatus2.toString() : "";
+						signature3 = (oSignature3 != null) ? oSignature3.toString() : "";
+						date3 = (oDate3 != null) ? oDate3.toString() : "";						
+						status3 = (oStatus3 != null) ? oStatus3.toString() : "";
+						
+						b1 = !signature1.equals("GISO") && !signature2.equals("GISO") && !signature3.equals("GISO");
 					}
 				}
 			}
-			
-			index = insertMultiple(index, new String[] {p.getName(), required, deprecated, p.getDataType().toString(), enumeration, description, original, current}, false, sheet);
+			if (!b1) {
+				index = insertMultiple(index, new String[] {p.getName(), required, deprecated, p.getDataType().toString(), enumeration, description, original, current, signature1, date1, status1, signature2, date2, status2, signature3, date3, status3}, false, sheet);
+			}
 		}		
 		return index;
 	}

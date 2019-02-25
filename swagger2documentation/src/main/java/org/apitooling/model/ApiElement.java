@@ -92,6 +92,27 @@ public abstract class ApiElement {
 							//cause.printStackTrace();
 						}
 					}
+					if (xCondition.containsKey("date2")) {
+						//"2018-12-27T00:00:00.000+0000"
+						String date = xCondition.get("date2").toString();
+						date = date.substring(0,10);
+						try {
+							xCondition.put("date2", DATEFORMAT.parse(date));
+						} catch (ParseException cause) {
+							//cause.printStackTrace();
+						}
+					}
+					if (xCondition.containsKey("date3")) {
+						//"2018-12-27T00:00:00.000+0000"
+						String date = xCondition.get("date3").toString();
+						date = date.substring(0,10);
+						try {
+							xCondition.put("date3", DATEFORMAT.parse(date));
+						} catch (ParseException cause) {
+							//cause.printStackTrace();
+						}
+					}
+					
 				}
 			}			
 		}

@@ -21,7 +21,7 @@ public class Main {
 					throw new FileNotFoundException("The directory do not exist: " + BASE.getAbsolutePath());
 			}
 			logger.warn("Base set to: {}", BASE.getAbsolutePath());
-			//new ApiWalker(BASE, "api", "output", "xml", new String[] {"[withNotes].yaml", "[withoutNotes].yaml", ".json"}, ExporterType.MSWORD).walk();
+			new ApiWalker(BASE, "api", "output", "xml", new String[] {"1.1.6[withNotes].yaml", "1.1.6.yaml", ".json"}, ExporterType.MSWORD).walk();
 			new ApiWalker(BASE, "api", "output", "xml", new String[] {"[withNotes].yaml", ".json"}, ExporterType.MSEXCEL).walk();
 		} catch (FileNotFoundException cause) {
 			throw new RuntimeException("ERROR", cause);
